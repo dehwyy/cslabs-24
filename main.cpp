@@ -15,10 +15,9 @@ const int kAfternoonStartHours = 18;
 const int kAfternoonEndHours = 23;
 
 const int kDecimalBase = 10;
-const int kWordForm1 = 1;
-const int kWordForm2_1 = 2;
-const int kWordForm2_2 = 3;
-const int kWordForm2_3 = 4;
+const int kWordNominativeSingular = 1;
+const int kWordNominativePluralMin = 2;
+const int kWordNominativePluralMax = 4;
 }  // namespace
 
 int main() {
@@ -49,9 +48,9 @@ int main() {
 
     std::cout << hoursFormated << " ";
 
-    if (hoursFormated == kWordForm1) {
+    if (hoursFormated == kWordNominativeSingular) {
         std::cout << "час ";
-    } else if (hoursFormated == kWordForm2_1 || hoursFormated == kWordForm2_2 || hoursFormated == kWordForm2_3) {
+    } else if (hoursFormated >= kWordNominativePluralMin && hoursFormated <= kWordNominativePluralMax) {
         std::cout << "часа ";
     } else {
         std::cout << "часов ";
@@ -59,10 +58,11 @@ int main() {
 
     if (minutes != kMaxMinutes) {
         std::cout << minutes << " ";
-        if (minutes == kWordForm1 || (minutes % kDecimalBase == kWordForm1 && minutes % kDecimalBase != kWordForm1)) {
+        if (minutes == kWordNominativeSingular ||
+            (minutes % kDecimalBase == kWordNominativeSingular && minutes % kDecimalBase != kWordNominativeSingular)) {
             std::cout << "минута ";
-        } else if ((minutes % kDecimalBase == kWordForm2_1 || minutes % kDecimalBase == kWordForm2_2 || minutes % kDecimalBase == kWordForm2_3) &&
-                   minutes / kDecimalBase != kWordForm1) {
+        } else if ((minutes % kDecimalBase >= kWordNominativePluralMin && minutes % kDecimalBase <= kWordNominativePluralMax) &&
+                   minutes / kDecimalBase != kWordNominativeSingular) {
             std::cout << "минуты ";
         } else {
             std::cout << "минут ";
