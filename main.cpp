@@ -21,15 +21,17 @@ const int kWordNominativePluralMax = 4;
 }  // namespace
 
 int main() {
-    std::cout << "Welcome to the time interpreter, laba nomer 1!" << std::endl;
-    std::cout << "Enter the time: ";
+    std::cout << "Welcome to the time interpreter!" << std::endl;
+    std::cout << "Enter the time in format \"{hours} {minutes}\". {hours} - number from 0 to 23, {minutes} - number from 0 to 59:\nInput: ";
 
     int hours = kMinHours;
     int minutes = kMinMinutes;
-    std::cin >> hours;
-    std::cin >> minutes;
+    std::cin >> hours >> minutes;
 
-    if (hours < kMinHours || hours >= kMaxHours || minutes < kMinMinutes || minutes >= kMaxMinutes) {
+    if (minutes < kMinMinutes || minutes >= kMaxMinutes) {
+        std::cout << "Введены недопустимые данные;" << std::endl;
+        return 1;
+    } else if (hours < kMinHours || hours >= kMaxHours) {
         std::cout << "Введены недопустимые данные;" << std::endl;
         return 1;
     }
