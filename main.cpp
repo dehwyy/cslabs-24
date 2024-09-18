@@ -12,35 +12,53 @@ const int kDayStartHour = 12;
 const int kAfternoonStartHour = 18;
 const int kNightStartHour = 23;
 
-const int kWordNominativeSingular = 1;
-const int kWordGenitiveSingularMin = 2;
-const int kWordGenitiveSingularMax = 4;
+const int kNominativeSingular = 1;
+const int kGenitivePluralMin = 2;
+const int kGenitivePluralMax = 4;
 
 const int kDecimalBase = 10;
 }  // namespace
 
-int main() {
-    std::cout << "Welcome to the time interpreter!" << std::endl;
-    std::cout << "Enter the time in format \"{hours} {minutes}\". {hours} - number from 0 to 23, {minutes} - number from 0 to 59:\nInput: ";
+void PrintUsageGuide() {
+    std::cout << std::endl
+              << "Использование:" << std::endl
+              << "[часы] [минуты]\t"
+              << "[часы] - число от 0 до 23, [минуты] - число от 0 до 59" << std::endl
+              << std::endl;
+}
+
+int main(int, char**) {
+    std::cout << "Добро пожаловать в интерпретатор времени" << std::endl;
+    PrintUsageGuide();
+    std::cout << "Ввод: ";
 
     int hours = kMinHours;
     int minutes = kMinMinutes;
     std::cin >> hours >> minutes;
 
+    bool invalidInput = false;
     if (minutes < kMinMinutes || minutes > kMaxMinutes) {
-        std::cout << "Invalid input: \"minutes\" are out of range." << std::endl;
-        return 1;
-    } else if (hours < kMinHours || hours > kMaxHours) {
-        std::cout << "Invalid input: \"hours\" are out of range." << std::endl;
+        std::cout << "Неправильный ввод: \"минуты\" введены неверно." << std::endl;
+        invalidInput = true;
+    }
+    if (hours < kMinHours || hours > kMaxHours) {
+        std::cout << "Неправильный ввод: \"часы\" введены неверно." << std::endl;
+        invalidInput = true;
+    }
+
+    if (invalidInput) {
+        PrintUsageGuide();
         return 1;
     }
 
     if (minutes == kMinMinutes) {
         if (hours == kMinHours) {
-            std::cout << "полночь;" << std::endl;
+            std::cout << "полночь" << std::endl;
             return 0;
-        } else if (hours == kMidDayHour) {
-            std::cout << "полдень;" << std::endl;
+        }
+
+        if (hours == kMidDayHour) {
+            std::cout << "полдень" << std::endl;
             return 0;
         }
     }
@@ -49,9 +67,9 @@ int main() {
 
     std::cout << hoursFormated;
 
-    if (hoursFormated == kWordNominativeSingular) {
+    if (hoursFormated == kNominativeSingular) {
         std::cout << " час ";
-    } else if (hoursFormated >= kWordGenitiveSingularMin && hoursFormated <= kWordGenitiveSingularMax) {
+    } else if (hoursFormated >= kGenitivePluralMin && hoursFormated <= kGenitivePluralMax) {
         std::cout << " часа ";
     } else {
         std::cout << " часов ";
@@ -59,11 +77,12 @@ int main() {
 
     if (minutes != kMinMinutes) {
         std::cout << minutes;
-        if (minutes == kWordNominativeSingular ||
-            (minutes % kDecimalBase == kWordNominativeSingular && minutes / kDecimalBase != kWordNominativeSingular)) {
+        int minutesDecimals = minutes / kDecimalBase;
+        int minutesUnits = minutes % kDecimalBase;
+
+        if (minutes == kNominativeSingular || (minutesUnits == kNominativeSingular && minutesDecimals != kNominativeSingular)) {
             std::cout << " минута ";
-        } else if ((minutes % kDecimalBase >= kWordGenitiveSingularMin && minutes % kDecimalBase <= kWordGenitiveSingularMax) &&
-                   minutes / kDecimalBase != kWordNominativeSingular) {
+        } else if ((minutesUnits >= kGenitivePluralMin && minutesUnits <= kGenitivePluralMax) && minutesDecimals != kNominativeSingular) {
             std::cout << " минуты ";
         } else {
             std::cout << " минут ";
@@ -84,7 +103,7 @@ int main() {
         std::cout << " ровно";
     }
 
-    std::cout << ";" << std::endl;
+    std::cout << std::endl;
 
     return 0;
 }
