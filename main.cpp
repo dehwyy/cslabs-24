@@ -12,9 +12,13 @@ const int kDayStartHour = 12;
 const int kAfternoonStartHour = 18;
 const int kNightStartHour = 23;
 
-const int kNominativeSingular = 1;
-const int kGenitivePluralMin = 2;
-const int kGenitivePluralMax = 4;
+const int kHoursNominativeSingular = 1;
+const int kHoursGenitivePluralMin = 2;
+const int kHoursGenitivePluralMax = 4;
+
+const int kMinutesNominativeSingular = 1;
+const int kMinutesGenitivePluralMin = 2;
+const int kMinutesGenitivePluralMax = 4;
 
 const int kDecimalBase = 10;
 }  // namespace
@@ -22,7 +26,7 @@ const int kDecimalBase = 10;
 void PrintUsageGuide() {
     std::cout << std::endl
               << "Использование:" << std::endl
-              << "[часы] [минуты]\t"
+              << "[часы] [минуты],\t"
               << "[часы] - число от 0 до 23, [минуты] - число от 0 до 59" << std::endl
               << std::endl;
 }
@@ -67,9 +71,9 @@ int main(int, char**) {
 
     std::cout << hoursFormated;
 
-    if (hoursFormated == kNominativeSingular) {
+    if (hoursFormated == kHoursNominativeSingular) {
         std::cout << " час ";
-    } else if (hoursFormated >= kGenitivePluralMin && hoursFormated <= kGenitivePluralMax) {
+    } else if (hoursFormated >= kHoursGenitivePluralMin && hoursFormated <= kHoursGenitivePluralMax) {
         std::cout << " часа ";
     } else {
         std::cout << " часов ";
@@ -80,9 +84,10 @@ int main(int, char**) {
         int minutesDecimals = minutes / kDecimalBase;
         int minutesUnits = minutes % kDecimalBase;
 
-        if (minutes == kNominativeSingular || (minutesUnits == kNominativeSingular && minutesDecimals != kNominativeSingular)) {
+        if (minutes == kMinutesNominativeSingular || (minutesUnits == kMinutesNominativeSingular && minutesDecimals != kMinutesNominativeSingular)) {
             std::cout << " минута ";
-        } else if ((minutesUnits >= kGenitivePluralMin && minutesUnits <= kGenitivePluralMax) && minutesDecimals != kNominativeSingular) {
+        } else if ((minutesUnits >= kMinutesGenitivePluralMin && minutesUnits <= kMinutesGenitivePluralMax) &&
+                   minutesDecimals != kMinutesNominativeSingular) {
             std::cout << " минуты ";
         } else {
             std::cout << " минут ";
