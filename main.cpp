@@ -10,7 +10,7 @@ const int kMidDayHour = 12;
 const int kMorningStartHour = 5;
 const int kDayStartHour = 12;
 const int kAfternoonStartHour = 18;
-const int kNightStartHour = 23;
+const int kNightStartHour = 24;
 
 const int kHoursNominativeSingular = 1;
 const int kHoursGenitivePluralMin = 2;
@@ -19,6 +19,8 @@ const int kHoursGenitivePluralMax = 4;
 const int kMinutesNominativeSingular = 1;
 const int kMinutesGenitivePluralMin = 2;
 const int kMinutesGenitivePluralMax = 4;
+const int kMinutesNominativePluralMin = 10;
+const int kMinutesNominativePluralMax = 20;
 
 const int kDecimalBase = 10;
 }  // namespace
@@ -80,13 +82,13 @@ int main(int, char**) {
 
     if (minutes != kMinMinutes) {
         std::cout << minutes;
-        int minutesDecimals = minutes / kDecimalBase;
         int minutesUnits = minutes % kDecimalBase;
 
-        if (minutes == kMinutesNominativeSingular || (minutesUnits == kMinutesNominativeSingular && minutesDecimals != kMinutesNominativeSingular)) {
+        if (minutes == kMinutesNominativeSingular ||
+            (minutesUnits == kMinutesNominativeSingular && (minutes <= kMinutesNominativePluralMin || minutes >= kMinutesNominativePluralMax))) {
             std::cout << " минута ";
         } else if ((minutesUnits >= kMinutesGenitivePluralMin && minutesUnits <= kMinutesGenitivePluralMax) &&
-                   minutesDecimals != kMinutesNominativeSingular) {
+                   (minutes <= kMinutesNominativePluralMin || minutes >= kMinutesNominativePluralMax)) {
             std::cout << " минуты ";
         } else {
             std::cout << " минут ";
@@ -99,7 +101,7 @@ int main(int, char**) {
         std::cout << "дня";
     } else if (hours >= kAfternoonStartHour && hours < kNightStartHour) {
         std::cout << "вечера";
-    } else {
+    } else if (hours >= kMinHours && hours < kMaxHours) {
         std::cout << "ночи";
     }
 
