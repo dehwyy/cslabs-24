@@ -5,15 +5,25 @@
 void Task1() {
     int n = 0;
     int m = 0;
-    std::cout << "Enter n and m in format {n m}. NOTE! m < n: ";
+    std::cout << "Enter n and m in format {n m}. \x1b[1;31mNOTE! n > m, n > 1\x1b[0m: ";
     std::cin >> n >> m;
+
+    if (n < 1) {
+        std::cout << "n must be > 1\n";
+        return;
+    }
+
+    if (m >= n) {
+        std::cout << "m must be < n\n";
+        return;
+    }
 
     int sum = 0;
     for (int i = 5; i <= n; i += 5) {
         if (i % m != 0)
             sum += i;
     }
-    std::cout << "Sum of natural numbers in range [1, " << n << "] = " << sum << "\n";
+    std::cout << "\x1b[1;34mSum of natural numbers in range [1, " << n << "] = " << sum << "\x1b[0m\n";
 }
 
 void Task2() {
@@ -32,34 +42,72 @@ void Task2() {
         }
     }
 
-    std::cout << "S = " << sum << "\n";
+    std::cout << "\x1b[1;35mS = " << sum << "\x1b[0m\n";
 }
 
-float Task3SxMember(float x, int n) {
+float Task3CalculateSxMember(float x, int n) {
     return pow(x, 2 * n + 1) / (2 * n + 1);
 }
 
 void Task3() {
-    std::cout << "x\tY(x)\tS(x)\tN\n";
+    std::cout << " x         Y(x)            S(x)              N\n";
+
+    std::cout << std::setprecision(6);
     for (float x = 0; x <= 1; x += 0.2) {
         float s = 0;
-        float sTaylorKoef = Task3SxMember(x, 2) / Task3SxMember(x, 1);
-        float lastTaylorSequenceMember = Task3SxMember(x, 1);
+        float sTaylorKoef = Task3CalculateSxMember(x, 2) / Task3CalculateSxMember(x, 1);
+        float lastTaylorSequenceMember = Task3CalculateSxMember(x, 1);
 
-        do {
+        while (lastTaylorSequenceMember > 1e-6) {
             s += lastTaylorSequenceMember;
             lastTaylorSequenceMember *= sTaylorKoef;
-        } while (lastTaylorSequenceMember < 1e-6);
+        }
 
         float y = log((1 - x) / (1 + x));
 
         std::cout << std::setw(3) << x << "\t";
-
-        std::cout << std::setw(7) << y << "\t" << s << "\t" << lastTaylorSequenceMember << "\n";
+        std::cout << std::setw(9) << y << "\t";
+        std::cout << std::setw(9) << s << "\t";
+        std::cout << std::setw(11) << lastTaylorSequenceMember << "\n";
     }
 }
 
-void AppStart() {
+float Task4CalculateMember(float x, int n) {
+    return pow(x, n + 1) / (n * pow(2, n));
+}
+
+void Task4() {
+
+    float x = 0;
+    std::cout << "Enter x: ";
+    std::cin >> x;
+
+    while (true) {
+        int n = 0;
+        std::cout << "Enter n (enter 0 to exit): ";
+        std::cin >> n;
+        if (n == 0) {
+            break;
+        }
+
+        float y = 0;
+        float yTaylorKoef = Task4CalculateMember(x, 2) / Task4CalculateMember(x, 1);
+        float lastTaylorSequenceMember = Task4CalculateMember(x, 1);
+
+        for (int i = 1; i < n + 1; ++i) {
+            y += lastTaylorSequenceMember;
+            lastTaylorSequenceMember *= yTaylorKoef;
+            if (i == 3 || i == 5 || i == 10) {
+                std::cout << "Partial sum for first " << i << " members = " << y << "\n";
+            }
+        }
+
+        std::cout << "y = " << y << "\n";
+    }
+
+}
+
+int AppStart() {
     std::cout << "Select a task to run! The task may be [1, 2, 3, 4]: ";
 
     int task = 0;
@@ -76,13 +124,23 @@ void AppStart() {
             Task3();
             break;
         case 4:
+            Task4();
             break;
         default:
-            break;
+            return 1;
     }
+
+    std::cout << "\n";
+
+    return 0;
 }
 
 int main(int, char**) {
-    AppStart();
+    while (true) {
+        if (AppStart() != 0) {
+            std::cout << "Goodbye!\n";
+            break;
+        }
+    }
     return 0;
 }
