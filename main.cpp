@@ -3,7 +3,10 @@
 #include <iostream>
 
 namespace {
-const int kTask1RangeSumStep = 5;
+const int kTaskNumberMin = 1;
+const int kTaskNumberMax = 4;
+
+const int kTask1ModBase = 5;
 
 const int kTask2Case1Min = 2;
 const int kTask2Case1Max = 8;
@@ -54,11 +57,12 @@ void Task1() {
     }
 
     int sum = 0;
-    for (int i = 0; i <= n; i += kTask1RangeSumStep) {
+    for (int i = 0; i <= n; i += kTask1ModBase) {
         if (i % m != 0) {
             sum += i;
         }
     }
+
     std::cout << kOutputStyleBlue << "Sum of natural numbers in range [1, " << n << "], which match the condition = " << sum << kOutputStyleReset
               << "\n";
 }
@@ -112,7 +116,7 @@ void Task3() {
 }
 
 double Task4CalculateSeriesMember(double x, int n) {
-    return pow(x, n + 1) / (n * pow(2, n));
+    return std::pow(x, n + 1) / (n * std::pow(2, n));
 }
 
 void Task4() {
@@ -129,59 +133,56 @@ void Task4() {
         std::cin >> n;
     }
 
-    double y = 0;
-    double yTaylorKoef = Task4CalculateSeriesMember(x, 2) / Task4CalculateSeriesMember(x, 1);
-    double lastTaylorSequenceMember = Task4CalculateSeriesMember(x, 1);
+    std::cout << std::fixed;
 
-    for (int i = 1; i < n + 1; ++i) {
-        y += lastTaylorSequenceMember;
-        lastTaylorSequenceMember *= yTaylorKoef;
-        if (i == kTask4CalculateN1 || i == kTask4CalculateN2 || i == kTask4CalculateN3) {
-            std::cout << "Partial sum for first " << i << " members = " << y << "\n";
+    double y = x;
+    int currentSeriesMemberNumber = 1;
+    double currentSeriesMember = Task4CalculateSeriesMember(x, currentSeriesMemberNumber);
+
+    while (currentSeriesMemberNumber < n) {
+        y += currentSeriesMember;
+
+        currentSeriesMember = Task4CalculateSeriesMember(x, ++currentSeriesMemberNumber);
+
+        if (currentSeriesMemberNumber == kTask4CalculateN1 || currentSeriesMemberNumber == kTask4CalculateN2 ||
+            currentSeriesMemberNumber == kTask4CalculateN3) {
+            std::cout << "Partial sum for first " << currentSeriesMemberNumber << " members = " << y << "\n";
         }
     }
 
-    std::cout << "y = " << y << "\n";
-}
-
-int AppStart() {
-    std::cout << "Select a task to run! The task may be [1, 2, 3, 4]: ";
-
-    int task = 0;
-    std::cin >> task;
-
-    while (task < 1 || task > 4) {
-        std::cout << "Incorrect task number! The task may be [1, 2, 3, 4]: ";
-        std::cin >> task;
-    }
-
-    switch (task) {
-        case 1:
-            Task1();
-            break;
-        case 2:
-            Task2();
-            break;
-        case 3:
-            Task3();
-            break;
-        case 4:
-            Task4();
-            break;
-        default:
-            return 1;
-    }
-
-    std::cout << "\n";
-
-    return 0;
+    std::cout << kOutputStyleBlue << "y = " << y << kOutputStyleReset << "\n";
 }
 
 int main(int, char**) {
     char continueAnswer = 'y';
 
     while (continueAnswer == 'y' || continueAnswer == 'Y') {
-        AppStart();
+        std::cout << "Select a task to run! The task may be [1, 2, 3, 4]: ";
+
+        int taskNumber = 0;
+        std::cin >> taskNumber;
+
+        while (taskNumber < kTaskNumberMin || taskNumber > kTaskNumberMax) {
+            std::cout << "Incorrect task number! The task may be [1, 2, 3, 4]: ";
+            std::cin >> taskNumber;
+        }
+
+        switch (taskNumber) {
+            case 1:
+                Task1();
+                break;
+            case 2:
+                Task2();
+                break;
+            case 3:
+                Task3();
+                break;
+            case 4:
+                Task4();
+                break;
+        }
+
+        std::cout << "\n";
 
         std::cout << kOutputStyleGreen << "Continue? (y/n): " << kOutputStyleReset;
         std::cin >> continueAnswer;
