@@ -21,7 +21,6 @@ const int kMinutesGenitivePluralBegin = 2;
 const int kMinutesGenitivePluralEnd = 4;
 const int kMinutesNominativePluralBegin = 10;
 const int kMinutesNominativePluralEnd = 20;
-const int kMinutesDecimal = 1;
 
 const int kDecimalBase = 10;
 }  // namespace
