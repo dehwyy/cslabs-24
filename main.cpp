@@ -133,7 +133,8 @@ double Task4CalculateSeriesMember(double x, int n) {
 }
 
 void Task4() {
-    std::cout << kOutputStyleGreen << "Вычисление суммы первых n-членов y по формуле: y = x + (x^2) / (1*2) + ... + (x^(n+1)) / (n*2^n).\n" << kOutputStyleReset;
+    std::cout << kOutputStyleGreen << "Вычисление суммы первых n-членов y по формуле: y = x + (x^2) / (1*2) + ... + (x^(n+1)) / (n*2^n).\n"
+              << kOutputStyleReset;
 
     double x = 0;
     std::cout << "Введите x (float): ";
