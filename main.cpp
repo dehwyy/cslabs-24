@@ -86,10 +86,10 @@ int main(int, char**) {
         int minutesUnits = minutes % kDecimalBase;
 
         if (minutes == kMinutesNominativeSingular ||
-            (minutesUnits == kMinutesNominativeSingular && (minutes <= kMinutesNominativePluralBegin || minutes >= kMinutesNominativePluralBegin))) {
+            (minutesUnits == kMinutesNominativeSingular && (minutes <= kMinutesNominativePluralBegin || minutes >= kMinutesNominativePluralEnd))) {
             std::cout << " минута ";
         } else if ((minutesUnits >= kMinutesGenitivePluralBegin && minutesUnits <= kMinutesGenitivePluralBegin) &&
-                   (minutes <= kMinutesNominativePluralBegin || minutes >= kMinutesNominativePluralBegin)) {
+                   (minutes <= kMinutesNominativePluralBegin || minutes >= kMinutesNominativePluralEnd)) {
             std::cout << " минуты ";
         } else {
             std::cout << " минут ";
