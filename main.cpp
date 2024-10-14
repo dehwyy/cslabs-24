@@ -16,7 +16,7 @@ const int kTask2Case2Max = 9;
 const int kTask2Case2Step = 3;
 
 const float kTask3XStep = 0.2;
-const int kTask3TableOffset = 16;
+const int kTask3TableColumnWidth = 16;
 const int kEpsilonPrecision = 6;
 const double kEpsilon = 1e-6;
 
@@ -32,24 +32,31 @@ const char* const kOutputStyleReset = "\x1b[0m";
 }  // namespace
 
 void Task1PrintUsage() {
-    std::cout << "Enter n and m in format {n m}: ";
+    std::cout << "Введите 'n' и 'm' в формате: {n m}. ";
 }
 
 void Task1() {
+    std::cout << kOutputStyleGreen << "Задание 1. Сумма натуральных чисел на отрезке от [1 до `n`], которые делятся на 5 и не делятся на `m`.\n"
+              << kOutputStyleReset;
+
     int n = 0;
     int m = 0;
 
     Task1PrintUsage();
-    std::cout << kOutputStyleRed << "NOTE! n > m, n > 1: " << kOutputStyleReset;
+    std::cout << kOutputStyleRed << "ЗАМЕЧАНИЕ! n > m, n > 1, m != 0: " << kOutputStyleReset;
     std::cin >> n >> m;
 
-    while (n < 1 || m >= n) {
+    while (n < 1 || m >= n || m == 0) {
         if (n < 1) {
-            std::cout << kOutputStyleRed << "n must be > 1!\n" << kOutputStyleReset;
+            std::cout << kOutputStyleRed << "n должно быть > 1!\n" << kOutputStyleReset;
         }
 
         if (m >= n) {
-            std::cout << kOutputStyleRed << "m must be < n!\n" << kOutputStyleReset;
+            std::cout << kOutputStyleRed << "m должно быть < n!\n" << kOutputStyleReset;
+        }
+
+        if (m == 0) {
+            std::cout << kOutputStyleRed << "m не может быть 0!\n" << kOutputStyleReset;
         }
 
         Task1PrintUsage();
@@ -63,13 +70,17 @@ void Task1() {
         }
     }
 
-    std::cout << kOutputStyleBlue << "Sum of natural numbers in range [1, " << n << "], which match the condition = " << sum << kOutputStyleReset
-              << "\n";
+    std::cout << kOutputStyleBlue << "Сумма чисел в диапазоне [1, " << n << "], которые соответствуют условию = " << sum << kOutputStyleReset << "\n";
 }
 
 void Task2() {
+    std::cout << kOutputStyleGreen << "Задание 2.\n"
+              << "Произведение от 2 до 8 с шагом i=2 членов (i^2 - a), если a >= =0.\n"
+              << "Произведение от 3 до 9 с шагом i=3 членов (i - 2)  , если a < 0.\n"
+              << kOutputStyleReset;
+
     double a = 0;
-    std::cout << "Enter a: ";
+    std::cout << "Введите a: ";
     std::cin >> a;
 
     double s = 1;
@@ -91,27 +102,29 @@ double Task3CalculateSeriesMember(float x, int n) {
 }
 
 void Task3() {
+    std::cout << kOutputStyleGreen << "Задание 3. Вычисление значений ряда S(x) и функции Y(x).\n\n" << kOutputStyleReset;
+
     std::cout << std::left << std::setprecision(kEpsilonPrecision);
-    std::cout << std::setw(kTask3TableOffset) << "x" << std::setw(kTask3TableOffset) << "Y(x)" << std::setw(kTask3TableOffset) << "S(x)"
-              << std::setw(kTask3TableOffset) << "N" << "\n\n";
+    std::cout << std::setw(kTask3TableColumnWidth) << "x" << std::setw(kTask3TableColumnWidth) << "Y(x)" << std::setw(kTask3TableColumnWidth)
+              << "S(x)" << std::setw(kTask3TableColumnWidth) << "N" << "\n\n";
 
     for (float x = 0; x <= 1.; x += kTask3XStep) {
         double s = 0;
-        int currentSeriesMemberNumber = 0;
-        double currentSeriesMember = Task3CalculateSeriesMember(x, currentSeriesMemberNumber);
+        int n = 0;
+        double currentSeriesMember = Task3CalculateSeriesMember(x, n);
 
         while (std::fabs(currentSeriesMember) > kEpsilon) {
             s += currentSeriesMember;
 
-            currentSeriesMember = Task3CalculateSeriesMember(x, ++currentSeriesMemberNumber);
+            currentSeriesMember = Task3CalculateSeriesMember(x, ++n);
         }
 
-        double y = log((1 + x) / (1 - x));
+        double y = std::log((1 + x) / (1 - x));
 
-        std::cout << std::setw(kTask3TableOffset) << x;
-        std::cout << std::setw(kTask3TableOffset) << y;
-        std::cout << std::setw(kTask3TableOffset) << 2 * s;
-        std::cout << std::setw(kTask3TableOffset) << currentSeriesMemberNumber << "\n";
+        std::cout << std::setw(kTask3TableColumnWidth) << x;
+        std::cout << std::setw(kTask3TableColumnWidth) << y;
+        std::cout << std::setw(kTask3TableColumnWidth) << 2 * s;
+        std::cout << std::setw(kTask3TableColumnWidth) << n << "\n";
     }
 }
 
@@ -120,16 +133,18 @@ double Task4CalculateSeriesMember(double x, int n) {
 }
 
 void Task4() {
+    std::cout << kOutputStyleGreen << "Вычисление суммы первых n-членов y по формуле: y = x + (x^2) / (1*2) + ... + (x^(n+1)) / (n*2^n).\n" << kOutputStyleReset;
+
     double x = 0;
-    std::cout << "Enter x (float): ";
+    std::cout << "Введите x (float): ";
     std::cin >> x;
 
     int n = 0;
-    std::cout << "Enter n (natural): ";
+    std::cout << "Введите n (натуральное): ";
     std::cin >> n;
 
     while (n < 1) {
-        std::cout << "N should be natural! Enter n (natural): ";
+        std::cout << "'n' должно быть натуральным! Введите 'n' еще раз: ";
         std::cin >> n;
     }
 
@@ -146,7 +161,7 @@ void Task4() {
 
         if (currentSeriesMemberNumber == kTask4CalculateN1 || currentSeriesMemberNumber == kTask4CalculateN2 ||
             currentSeriesMemberNumber == kTask4CalculateN3) {
-            std::cout << "Partial sum for first " << currentSeriesMemberNumber << " members = " << y << "\n";
+            std::cout << "Частичная сумма для первых " << currentSeriesMemberNumber << " членов = " << y << "\n";
         }
     }
 
@@ -157,13 +172,13 @@ int main(int, char**) {
     char continueAnswer = 'y';
 
     while (continueAnswer == 'y' || continueAnswer == 'Y') {
-        std::cout << "Select a task to run! The task may be [1, 2, 3, 4]: ";
+        std::cout << "Введите номер задания для исполнения: [1, 2, 3, 4]: ";
 
         int taskNumber = 0;
         std::cin >> taskNumber;
 
         while (taskNumber < kTaskNumberMin || taskNumber > kTaskNumberMax) {
-            std::cout << "Incorrect task number! The task may be [1, 2, 3, 4]: ";
+            std::cout << "Неверный номер задания! Возможные номера: [1, 2, 3, 4]: ";
             std::cin >> taskNumber;
         }
 
@@ -184,11 +199,11 @@ int main(int, char**) {
 
         std::cout << "\n";
 
-        std::cout << kOutputStyleGreen << "Continue? (y/n): " << kOutputStyleReset;
+        std::cout << kOutputStyleGreen << "Продолжить? (y/n): " << kOutputStyleReset;
         std::cin >> continueAnswer;
     }
 
-    std::cout << kOutputStyleMagenta << "Goodbye!" << kOutputStyleReset << "\n";
+    std::cout << kOutputStyleMagenta << "До свидания!" << kOutputStyleReset << "\n";
 
     return 0;
 }
