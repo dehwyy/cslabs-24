@@ -1,3 +1,3 @@
 namespace app {
-  int Start();
+  void Run(void *());
 }

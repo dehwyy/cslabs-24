@@ -1,6 +1,7 @@
 #include "app.cpp"
+#include "task.cpp"
 
 int main(int, char**) {
-  int statusCode = app::Start();
-  return statusCode;
+  app::Run(task::Run);
+  return 0;
 }
