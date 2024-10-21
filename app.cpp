@@ -1,7 +1,6 @@
 #include <iostream>
 
-namespace app {
-void Run(void (*execute)()) {
+namespace app {void Run(void (*execute)()) {
     char input = 'y';
 
     while (input == 'y') {
