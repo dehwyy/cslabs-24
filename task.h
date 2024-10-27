@@ -1,0 +1,3 @@
+namespace task {
+void Run();
+}
