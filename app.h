@@ -1,3 +1,5 @@
+#pragma once
+
 namespace app {
-  void Run(void (*execute)());
+  void Run(void (*)());
 }

@@ -1,101 +1,86 @@
-#define PI M_PI
 #include <cmath>
+#include <iomanip>
 #include <iostream>
+
+#include "task.h"
 
 namespace {
 const int kMaxIterations = 1e5;
 const double kIterativeX0 = 0.1;
 
-enum class Task : int {
-    Iteration = 1,
-    Newton = 2,
-    HalfDivision = 3
+struct EquationParameters {
+    double k = 0.;
+    double epsilon = 0.;
 };
 
-bool IsValidTaskNumber(int task) {
-    bool isValid = false;
+struct Segment {
+    double xL = 0.;
+    double xR = 0.;
+};
 
-    switch (static_cast<Task>(task)) {
-        case Task::Iteration:
-            isValid = true;
-            break;
-        case Task::Newton:
-            isValid = true;
-            break;
-        case Task::HalfDivision:
-            isValid = true;
-            break;
-    }
-
-    return isValid;
+[[nodiscard]] bool IsValidSegment(Segment segment) {
+    return segment.xL < segment.xR;
 }
 
-double f(double x, double k) {
+[[nodiscard]] double f(double x, double k) {
     return k * std::cos(x);
 }
 
-double fx(double x, double k) {
+[[nodiscard]] double fx(double x, double k) {
     return x - f(x, k);
 }
 
-double fpx(double x, double k) {
+[[nodiscard]] double fpx(double x, double k) {
     return 1 + k * std::sin(x);
 }
 
-double IterativeMethod(double epsilon, double k, int& n) {
-    double x0 = kIterativeX0;
-    double x = f(x0, k);
+[[nodiscard]] bool IsValidSegmentSigns(Segment segment, double k) {
+    bool isLeftPositive = fx(segment.xL, k) > 0;
+    bool isRightPositive = fx(segment.xR, k) > 0;
 
-    while (std::abs(x0 - x) > epsilon && n < kMaxIterations) {
-        x0 = x;
-        x = f(x0, k);
-        ++n;
-    }
-
-    return x0;
+    return isLeftPositive != isRightPositive;
 }
 
-double NewtonMethod(double epsilon, double k, int& n) {
-    double x0 = 1.;
-    while (std::abs(f(x0, k)) > epsilon && n < kMaxIterations) {
-        x0 = x0 - fx(x0, k) / fpx(x0, k);
-        ++n;
-    }
-
-    return x0;
-}
-
-double HalfDivision(double epsilon, double k, int& n, double l, double r) {
-    double c = (l + r) / 2;
-
-    while (r - l > epsilon) {
-        double fl = fx(l, k);
-        double fc = fx(c, k);
-
-        if ((fc >= 0 && fl <= 0) || (fc <= 0 && fl >= 0)) {
-            r = c;
-        } else {
-            l = c;
-        }
-        c = (l + r) / 2;
-        ++n;
-    }
-
-    return c;
-}
-
-double ReadEpsilon() {
-    double epsilon = 0;
-    std::cout << "Введите точность: ";
-    std::cin >> epsilon;
-    return epsilon;
-}
-
-double ReadK() {
-    double k = 0;
-    std::cout << "Введите коэффициент: ";
+[[nodiscard]] EquationParameters ReadEquationParametersFromStdin() {
+    std::cout << "Введите коэффициент при cos(x) (вещественное  число): ";
+    double k = 0.;
     std::cin >> k;
-    return k;
+
+    std::cout << "Введите погрешность результата научном виде (например: 1e-6): ";
+    double epsilon = 0.;
+    std::cin >> epsilon;
+
+    return EquationParameters{k, epsilon};
+}
+
+[[nodiscard]] double ReadXInitialValueFromStdin() {
+    std::cout << "Введите начальное значение поиска x0 (вещественное число): ";
+    double x0 = 0.;
+    std::cin >> x0;
+
+    return x0;
+}
+
+[[nodiscard]] Segment ReadSegmentFromStdin() {
+    std::cout << "Введите левую границу отрезка: ";
+    double xL = 0.;
+    std::cin >> xL;
+
+    std::cout << "Введите правую границу отрезка: ";
+    double xR = 0.;
+    std::cin >> xR;
+
+    return Segment{xL, xR};
+}
+
+void PrintEquationAnswer(task::EquationResult equationResult, double epsilon) {
+    if (!equationResult.solved) {
+        std::cout << "Не удалось найти корень уравнения при введённых данных\n";
+        return;
+    }
+
+    std::cout << std::fixed << std::setprecision(std::log10(1 / epsilon)) << "Найденный корень x = " << equationResult.x
+              << ", количество итераций: " << equationResult.iterationCount << "\n";
 }
 
 }  // namespace
@@ -111,36 +96,110 @@ void Run() {
     int task = 0;
     std::cin >> task;
 
-    while (!IsValidTaskNumber(task)) {
-        std::cout << "Неверный ввод номера задания! Введите еще раз: \n";
-        std::cin >> task;
-    }
-
-    Task castedTask = static_cast<Task>(task);
-
-    double epsilon = ReadEpsilon();
-    double k = ReadK();
-    int n = 0;
-
-    switch (castedTask) {
+    switch (static_cast<Task>(task)) {
         case Task::Iteration:
-            std::cout << "Результат итерационного метода, ε = " << epsilon << ", k = " << k << ": \nx = " << IterativeMethod(epsilon, k, n)
-                      << "\nКоличество итераций: " << n << std::endl;
+            ExecuteIterationMethod();
             break;
         case Task::Newton:
-            std::cout << "Результат метода Ньютона, ε = " << epsilon << ", k = " << k << ": \nx = " << NewtonMethod(epsilon, k, n)
-                      << "\nКоличество итераций: " << n << std::endl;
+            ExecuteNewtonMethod();
             break;
         case Task::HalfDivision:
-            double xLeft = 0;
-            double xRight = 0;
-
-            std::cout << "Введите левую границу и правую через пробел в формате {xLeft xRight}: ";
-            std::cin >> xLeft >> xRight;
-
-            std::cout << "Результат метода половинного деления, ε = " << epsilon << ", k = " << k
-                      << ": \nx = " << HalfDivision(epsilon, k, n, xLeft, xRight) << "\nКоличество итераций: " << n << std::endl;
+            ExecuteHalfDivisionMethod();
+            break;
+        default:
+            std::cout << "Введенный номер задачи некорректен. Ввод должен быть целым числом от 1 до 3\n";
             break;
     }
+}
+
+void ExecuteIterationMethod() {
+    EquationParameters params = ReadEquationParametersFromStdin();
+    double x0 = ReadXInitialValueFromStdin();
+
+    EquationResult result = CalculateIterationMethod(params.k, params.epsilon, x0);
+
+    PrintEquationAnswer(result, params.epsilon);
+}
+
+void ExecuteNewtonMethod() {
+    EquationParameters params = ReadEquationParametersFromStdin();
+    double x0 = ReadXInitialValueFromStdin();
+
+    EquationResult result = CalculateNewtonMethod(params.k, params.epsilon, x0);
+
+    PrintEquationAnswer(result, params.epsilon);
+}
+
+void ExecuteHalfDivisionMethod() {
+    EquationParameters params = ReadEquationParametersFromStdin();
+    Segment segment = ReadSegmentFromStdin();
+
+    if (!IsValidSegment(segment)) {
+        std::cout << "Введены некорректные значения начального отрезка. Левый конец отрезка должен быть меньше правого\n";
+        return;
+    } else if (!IsValidSegmentSigns(segment, params.k)) {
+        std::cout << "Введены некорректные значения начального отрезка. На концах отрезка функция должна принимать значения противоположных знаков\n";
+        return;
+    }
+
+    EquationResult result = CalculateHalfDivisionMethod(params.k, params.epsilon, segment.xL, segment.xR);
+
+    PrintEquationAnswer(result, params.epsilon);
+}
+
+EquationResult CalculateIterationMethod(double k, double epsilon, double x0) {
+    double prevX = x0;
+    double x = f(prevX, k);
+
+    int iterationCount = 1;
+
+    while (std::fabs(x - prevX) > epsilon && iterationCount < kMaxIterations) {
+        prevX = x;
+        x = f(x, k);
+        ++iterationCount;
+    }
+
+    if (iterationCount == kMaxIterations && fx(x, k) > epsilon) {
+        return {.solved = false};
+    }
+
+    return EquationResult{x, iterationCount};
+}
+
+EquationResult CalculateNewtonMethod(double k, double epsilon, double x0) {
+    double prevX = x0;
+    double x = prevX - fx(prevX, k) / fpx(prevX, k);
+
+    int iterationCount = 1;
+
+    while (std::fabs(x - prevX) > epsilon && iterationCount < kMaxIterations) {
+        prevX = x;
+        x -= fx(x, k) / fpx(x, k);
+        ++iterationCount;
+    }
+
+    if (iterationCount == kMaxIterations && fx(x, k) > epsilon) {
+        return {.solved = false};
+    }
+
+    return EquationResult{x, iterationCount};
+}
+
+EquationResult CalculateHalfDivisionMethod(double k, double epsilon, double xL, double xR) {
+    int iterationCount = 0;
+
+    while (xR - xL > epsilon) {
+        double xM = (xL + xR) / 2;
+
+        if (IsValidSegmentSigns({xL, xM}, k)) {
+            xR = xM;
+        } else {
+            xL = xM;
+        }
+
+        ++iterationCount;
+    }
+
+    return EquationResult{.x = (xL + xR) / 2, .iterationCount = iterationCount};
 }
 }  // namespace task
