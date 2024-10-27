@@ -1,7 +1,7 @@
 #pragma once
 
 namespace task {
-  enum class Task : int {
+enum class Task : int {
     Iteration = 1,
     Newton = 2,
     HalfDivision = 3
@@ -21,4 +21,4 @@ void ExecuteHalfDivisionMethod();
 [[nodiscard]] EquationResult CalculateIterationMethod(double k, double epsilon, double x0);
 [[nodiscard]] EquationResult CalculateNewtonMethod(double k, double epsilon, double x0);
 [[nodiscard]] EquationResult CalculateHalfDivisionMethod(double k, double epsilon, double xL, double xR);
-}
+}  // namespace task

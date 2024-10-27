@@ -79,7 +79,7 @@ void PrintEquationAnswer(task::EquationResult equationResult, double epsilon) {
         return;
     }
 
-    std::cout << std::fixed << std::setprecision(std::log10(1 / epsilon)) << "Найденный корень x = " << equationResult.x
+    std::cout << std::fixed << std::setprecision(static_cast<int>(std::log10(1 / epsilon))) << "Найденный корень x = " << equationResult.x
               << ", количество итераций: " << equationResult.iterationCount << "\n";
 }
 
