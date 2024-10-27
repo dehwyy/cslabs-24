@@ -6,12 +6,12 @@ const int RANDOM_RANGE_END = 99;
 }  // namespace
 
 namespace randmodule {
-void FillArrayWithRandomNumbers(int* arr, int size_t) {
+void FillArrayWithRandomNumbers(int* arr, size_t size) {
     std::random_device r{};
     std::default_random_engine randomEngine(r());
     std::uniform_int_distribution<int> distribution(RANDOM_RANGE_BEGIN, RANDOM_RANGE_END);
 
-    for (int i = 0; i < size_t; ++i) {
+    for (int i = 0; i < size; ++i) {
         arr[i] = distribution(randomEngine);
     }
 }

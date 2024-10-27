@@ -2,7 +2,7 @@
 #include "randmodule.h"
 
 namespace {
-typedef bool (*CmpFn)(int, int);
+using CmpFn = bool (*)(int, int);
 
 void SelectionSort(CmpFn cmp, int* arr, size_t size) {
     for (size_t i = 0; i < size - 1; ++i) {

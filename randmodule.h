@@ -1,4 +1,4 @@
 namespace randmodule {
-void FillArrayWithRandomNumbers(int* arr, int size_t);
+void FillArrayWithRandomNumbers(int* arr, size_t size);
 int FromRange(int begin, int end);
 }  // namespace randmodule
