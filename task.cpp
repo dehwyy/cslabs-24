@@ -4,6 +4,11 @@
 namespace {
 using CmpFn = bool (*)(int, int);
 
+enum class SortMethod {
+    Selection = 1,
+    Bubble
+};
+
 void SelectionSort(CmpFn cmp, int* arr, size_t size) {
     for (size_t i = 0; i < size - 1; ++i) {
         size_t pivotIndex = i;
@@ -49,36 +54,65 @@ bool CmpAsc(int a, int b) {
 bool CmpDesc(int a, int b) {
     return a > b;
 }
+
+void CopyIntArray(int* from, int* to, size_t size) {
+    for (size_t i = 0; i < size; ++i) {
+        to[i] = from[i];
+    }
+}
+
+void PrintArray(int* arr, size_t size, SortMethod sortMethod = SortMethod::Bubble, int swaps = 0, int compares = 0) {
+    switch (sortMethod) {
+        case SortMethod::Selection:
+            std::cout << "Выбором";
+            break;
+        case SortMethod::Bubble:
+            std::cout << "Пузырьком";
+            break;
+    }
+
+    std::cout << "[";
+    for (size_t i = 0; i < size; ++i) {
+        std::cout << arr[i] << ", ";
+    }
+    std::cout << "]";
+    std::cout << swaps << compares << std::endl;
+}
+
+void ArraySortAndPrint(SortMethod sortMethod, CmpFn cmp, int* arr, size_t size) {
+    switch (sortMethod) {
+        case SortMethod::Selection:
+            break;
+        case SortMethod::Bubble:
+            break;
+    };
+}
+
 }  // namespace
 
 namespace task {
 
-void PrintArray(int* arr, size_t size) {
-    for (size_t i = 0; i < size; ++i) {
-        std::cout << arr[i] << " ";
-    }
-    std::cout << std::endl;
-}
-
 void Run() {
     const size_t size = randmodule::FromRange(5, 10);
     int* arr = new int[size];
-
-    void (*Sort)(bool (*)(int, int), int*, size_t) = SelectionSort;
-
     randmodule::FillArrayWithRandomNumbers(arr, size);
+    int* arr2 = new int[size];
+
     PrintArray(arr, size);
 
-    Sort(CmpAsc, arr, size);
+    SelectionSort(CmpAsc, arr, size);
+
     PrintArray(arr, size);
 
-    Sort(CmpDesc, arr, size);
+    PrintArray(arr, size);
+
     PrintArray(arr, size);
 
     BubbleSort(CmpAsc, arr, size);
     PrintArray(arr, size);
 
     delete[] arr;
+    delete[] arr2;
 }
 
 }  // namespace task
