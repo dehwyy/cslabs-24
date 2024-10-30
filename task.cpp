@@ -6,7 +6,6 @@
 
 namespace {
 const int kMaxIterations = 1e5;
-const double kIterativeX0 = 0.1;
 
 struct EquationParameters {
     double k = 0.;
@@ -159,7 +158,7 @@ EquationResult CalculateIterationMethod(double k, double epsilon, double x0) {
         ++iterationCount;
     }
 
-    if (iterationCount == kMaxIterations && fx(x, k) > epsilon) {
+    if (iterationCount == kMaxIterations && std::fabs(fx(x, k)) > epsilon) {
         return {.solved = false};
     }
 
@@ -178,7 +177,7 @@ EquationResult CalculateNewtonMethod(double k, double epsilon, double x0) {
         ++iterationCount;
     }
 
-    if (iterationCount == kMaxIterations && fx(x, k) > epsilon) {
+    if (iterationCount == kMaxIterations && std::fabs(fx(x, k)) > epsilon) {
         return {.solved = false};
     }
 
@@ -188,7 +187,7 @@ EquationResult CalculateNewtonMethod(double k, double epsilon, double x0) {
 EquationResult CalculateHalfDivisionMethod(double k, double epsilon, double xL, double xR) {
     int iterationCount = 0;
 
-    while (xR - xL > epsilon) {
+    while (xR - xL > epsilon && iterationCount < kMaxIterations) {
         double xM = (xL + xR) / 2;
 
         if (IsValidSegmentSigns({xL, xM}, k)) {
