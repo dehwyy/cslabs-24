@@ -3,6 +3,7 @@
 
 namespace {
 using CmpFn = bool (*)(int, int);
+using SortFn = void (*)(CmpFn, int*, size_t);
 
 enum class SortMethod {
     Selection = 1,
@@ -90,8 +91,12 @@ void ArraySortAndPrint(SortMethod sortMethod, CmpFn cmp, int* arr, size_t size) 
 
 }  // namespace
 
+void CopyIntArray(int* from, int* to, size_t size) {
+    for (size_t i = 0; i < size; ++i) {
+        to[i] = from[i];
+    }
+}
 namespace task {
-
 void Run() {
     const size_t size = randmodule::FromRange(5, 10);
     int* arr = new int[size];
