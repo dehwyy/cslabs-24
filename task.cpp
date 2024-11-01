@@ -1,4 +1,5 @@
 #include "task.h"
+#include <iomanip>
 #include <iostream>
 #include "randmodule.h"
 
@@ -11,71 +12,47 @@ bool CmpDesc(int a, int b) {
     return a > b;
 }
 
-void CopyIntArray(int* from, int* to, size_t size) {
-    for (size_t i = 0; i < size; ++i) {
-        to[i] = from[i];
-    }
-}
-
-void PrintArrayIsNullptr() {
-    std::cout << "Ошибка! Указатель на массив = nullptr!" << std::endl;
-}
-
-void PrintArrayElements(int* arr, size_t size) {
-    for (size_t i = 0; i < size; ++i) {
-        std::cout << arr[i] << ", ";
-    }
-}
-
-void PrintArray(int* arr, size_t size, task::SortMethod sortMethod, int swaps, int compares) {
-    switch (sortMethod) {
-        case task::SortMethod::SelectionSort:
-            std::cout << "SelectionSort ";
-            break;
-        case task::SortMethod::BubbleSort:
-            std::cout << "BubbleSort ";
-            break;
-    }
-
+void PrintArray(int* arr, size_t size, bool ln = false) {
     std::cout << "[";
-    PrintArrayElements(arr, size);
+    for (size_t i = 0; i < size; ++i) {
+        std::cout << arr[i];
+
+        if (i != size - 1) {
+            std::cout << ",";
+        }
+    }
     std::cout << "]";
-    std::cout << swaps << compares << std::endl;
+
+    if (ln) {
+        std::cout << std::endl;
+    }
 }
 
-void SortAndPrintArray(task::SortMethod sortMethod, task::CmpFn cmp, int* arr, size_t size) {
-    task::SortResult* result = {};
+void PrintInitialArray(int* arr, size_t size) {
+    std::cout << "Исходный массив: ";
 
+    PrintArray(arr, size, true);
+
+    std::cout << std::endl;
+}
+
+void PrintArrayFormatted(int* arr, size_t size, task::SortMethod sortMethod, int swaps, int compares) {
     switch (sortMethod) {
         case task::SortMethod::SelectionSort:
-            result = task::SelectionSort(cmp, arr, size);
+            std::cout << "Сортировка выбором:   ";
             break;
         case task::SortMethod::BubbleSort:
-            result = task::BubbleSort(cmp, arr, size);
+            std::cout << "Сортировка пузырьком: ";
             break;
-    };
-
-    if (!result) {
-        PrintArrayIsNullptr();
-        return;
     }
 
-    PrintArray(arr, size, sortMethod, (*result).swaps, (*result).comparisation);
-}
+    PrintArray(arr, size);
+    std::cout << ", ";
 
-int* CopyIntArray(int* from, size_t size) {
-    if (!from) {
-        PrintArrayIsNullptr();
-        return nullptr;
-    }
+    std::cout << "Перестановки: " << swaps << ", ";
+    std::cout << "Сравнения: " << compares << ", ";
 
-    int* array_copy = new int[size];
-
-    for (size_t i = 0; i < size; ++i) {
-        array_copy[i] = from[i];
-    }
-
-    return array_copy;
+    std::cout << "\n" << std::endl;
 }
 
 }  // namespace
@@ -83,36 +60,85 @@ int* CopyIntArray(int* from, size_t size) {
 namespace task {
 void Run() {
     int task = 0;
+
+    std::cout << "Выберите задание: " << std::endl;
+    std::cout << "1 - Сортировка статического массива" << std::endl;
+    std::cout << "2 - Сортировка динамического массива" << std::endl;
+
+    std::cout << "Ваш выбор: ";
+    std::cin >> task;
+
     switch (static_cast<Task>(task)) {
         case Task::Static:
-
-            int static_arr[kStaticArraySize];
-            randmodule::FillArrayWithRandomNumbers(static_arr, kStaticArraySize);
-
-            PrintArrayElements(static_arr, kStaticArraySize);
-
-            SortAndPrintArray(SortMethod::BubbleSort, CmpAsc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-            SortAndPrintArray(SortMethod::BubbleSort, CmpAsc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-            SortAndPrintArray(SortMethod::BubbleSort, CmpDesc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-
-            SortAndPrintArray(SortMethod::SelectionSort, CmpAsc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-            SortAndPrintArray(SortMethod::SelectionSort, CmpAsc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-            SortAndPrintArray(SortMethod::SelectionSort, CmpDesc, CopyIntArray(static_arr, kStaticArraySize), kStaticArraySize);
-
+            RunStaticTask();
             break;
         case Task::Dynamic:
+            RunDynamicTask();
             break;
         default:
             std::cout << "Неверной ввод заданий!" << std::endl;
     }
 }
 
-SortResult* SelectionSort(CmpFn cmp, int* arr, size_t size) {
-    if (!arr) {
-        return nullptr;
+void RunStaticTask() {
+    int staticArr[kStaticArraySize];
+    randmodule::FillArrayWithRandomNumbers(staticArr, kStaticArraySize);
+
+    PrintInitialArray(staticArr, kStaticArraySize);
+
+    ExecuteSortingTask(SortMethod::BubbleSort, CmpAsc, staticArr, kStaticArraySize);
+    ExecuteSortingTask(SortMethod::BubbleSort, CmpAsc, staticArr, kStaticArraySize);
+    ExecuteSortingTask(SortMethod::BubbleSort, CmpDesc, staticArr, kStaticArraySize);
+
+    ExecuteSortingTask(SortMethod::SelectionSort, CmpAsc, staticArr, kStaticArraySize);
+    ExecuteSortingTask(SortMethod::SelectionSort, CmpAsc, staticArr, kStaticArraySize);
+    ExecuteSortingTask(SortMethod::SelectionSort, CmpDesc, staticArr, kStaticArraySize);
+}
+
+void RunDynamicTask() {
+    int size = 0;
+    std::cout << "Размер массива: ";
+    std::cin >> size;
+
+    int* dynamicArr = new int[size];
+    randmodule::FillArrayWithRandomNumbers(dynamicArr, size);
+
+    PrintInitialArray(dynamicArr, size);
+
+    ExecuteSortingTask(SortMethod::BubbleSort, CmpAsc, dynamicArr, size);
+    ExecuteSortingTask(SortMethod::SelectionSort, CmpAsc, dynamicArr, size);
+
+    delete[] dynamicArr;
+}
+
+void ExecuteSortingTask(SortMethod sorting, CmpFn cmp, int* initialArr, size_t size) {
+    if (!initialArr) {
+        return;
     }
 
-    SortResult result = SortResult{0, 0};
+    int* arr = new int[size];
+    std::copy(initialArr, initialArr + size, arr);
+
+    SortBenchmark benchmark = {0, 0};
+
+    switch (sorting) {
+        case SortMethod::BubbleSort:
+            BubbleSort(cmp, arr, size, benchmark);
+            break;
+        case SortMethod::SelectionSort:
+            SelectionSort(cmp, arr, size, benchmark);
+            break;
+    }
+
+    PrintArrayFormatted(arr, size, sorting, benchmark.swaps, benchmark.comparisation);
+
+    delete[] arr;
+}
+
+void SelectionSort(CmpFn cmp, int* arr, size_t size, SortBenchmark& benchmark) {
+    if (!arr) {
+        return;
+    }
 
     for (size_t i = 0; i < size - 1; ++i) {
         size_t pivotIndex = i;
@@ -121,7 +147,7 @@ SortResult* SelectionSort(CmpFn cmp, int* arr, size_t size) {
             if (cmp(arr[j], arr[pivotIndex])) {
                 pivotIndex = j;
             }
-            ++result.comparisation;
+            ++benchmark.comparisation;
         }
 
         if (pivotIndex != i) {
@@ -129,19 +155,16 @@ SortResult* SelectionSort(CmpFn cmp, int* arr, size_t size) {
             arr[i] = arr[pivotIndex];
             arr[pivotIndex] = temp;
 
-            ++result.swaps;
+            ++benchmark.swaps;
         }
     }
-
-    return &result;
 }
 
-SortResult* BubbleSort(CmpFn cmp, int* arr, size_t size) {
+void BubbleSort(CmpFn cmp, int* arr, size_t size, SortBenchmark& benchmark) {
     if (!arr) {
-        return nullptr;
+        return;
     };
 
-    SortResult result = SortResult{0, 0};
     bool anySwapped = false;
 
     for (size_t i = 0; i < size - 1; ++i) {
@@ -154,16 +177,14 @@ SortResult* BubbleSort(CmpFn cmp, int* arr, size_t size) {
                 arr[j + 1] = temp;
                 anySwapped = true;
 
-                ++result.swaps;
+                ++benchmark.swaps;
             }
 
-            ++result.comparisation;
+            ++benchmark.comparisation;
         }
         if (!anySwapped) {
             break;
         }
     }
-
-    return &result;
 }
 }  // namespace task

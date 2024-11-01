@@ -1,3 +1,10 @@
+#pragma once
+
+#if defined(size_t)
+#else
+typedef unsigned long size_t;
+#endif
+
 namespace task {
 
 const int kStaticArraySize = 8;
@@ -13,13 +20,17 @@ enum class SortMethod {
     SelectionSort
 };
 
-struct SortResult {
+struct SortBenchmark {
     int swaps = 0;
     int comparisation = 0;
 };
 
 void Run();
+void RunStaticTask();
+void RunDynamicTask();
 
-[[nodiscard]] SortResult* SelectionSort(CmpFn cmp, int* arr, unsigned size);
-[[nodiscard]] SortResult* BubbleSort(CmpFn cmp, int* arr, unsigned size);
-}
+void ExecuteSortingTask(SortMethod sorting, CmpFn cmp, int* initialArr, size_t size);
+
+void SelectionSort(CmpFn cmp, int* arr, size_t size, SortBenchmark& result);
+void BubbleSort(CmpFn cmp, int* arr, size_t size, SortBenchmark& result);
+}  // namespace task
