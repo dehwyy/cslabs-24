@@ -100,6 +100,10 @@ void RunDynamicTask() {
     std::cout << "Размер массива: ";
     std::cin >> size;
 
+    if (size <= 0) {
+        std::cout << "Размер массива должен быть больше 0!" << std::endl;    
+    }
+
     int* dynamicArr = new int[size];
     randmodule::FillArrayWithRandomNumbers(dynamicArr, size);
 
