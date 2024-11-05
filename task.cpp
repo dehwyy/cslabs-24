@@ -101,7 +101,8 @@ void RunDynamicTask() {
     std::cin >> size;
 
     if (size <= 0) {
-        std::cout << "Размер массива должен быть больше 0!" << std::endl;    
+        std::cout << "Размер массива должен быть больше 0!" << std::endl;
+        return;
     }
 
     int* dynamicArr = new int[size];
