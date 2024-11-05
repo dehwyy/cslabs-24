@@ -133,8 +133,6 @@ void ExecuteSortingTask(SortMethod sorting, CmpFn cmp, int* arr, size_t size) {
     }
 
     PrintArrayFormatted(arr, size, sorting, benchmark.swaps, benchmark.comparisation);
-
-    delete[] arr;
 }
 
 void SelectionSort(CmpFn cmp, int* arr, size_t size, SortBenchmark& benchmark) {
