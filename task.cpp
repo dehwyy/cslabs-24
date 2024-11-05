@@ -116,13 +116,10 @@ void RunDynamicTask() {
     delete[] dynamicArr;
 }
 
-void ExecuteSortingTask(SortMethod sorting, CmpFn cmp, int* initialArr, size_t size) {
-    if (!initialArr) {
+void ExecuteSortingTask(SortMethod sorting, CmpFn cmp, int* arr, size_t size) {
+    if (!arr) {
         return;
     }
-
-    int* arr = new int[size];
-    std::copy(initialArr, initialArr + size, arr);
 
     SortBenchmark benchmark = {0, 0};
 
