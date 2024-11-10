@@ -4,8 +4,7 @@
 namespace {
 const int MOD = 128;
 void NewSymbolOrIncrement(caeser_cypher::TotalCypherStats& stats, char ch, char encoded_ch) {
-    size_t ch_idx = ch - 1;
-
+    int ch_idx = ch;
     ++stats.symbols[ch_idx].total;
     if (!stats.symbols[ch_idx].s) {
         stats.symbols[ch_idx].s = ch;

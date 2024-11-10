@@ -12,6 +12,17 @@ const char ANSI_MAX_CHAR = 127;
 const int WORD_LEN = 300;
 const int CYPHER_LEN = 100;
 
+bool IsValidAnsi(int ch) {
+    return ch >= ANSI_MIN_CHAR && ch <= ANSI_MAX_CHAR;
+}
+
+void PrintChar(char ch, const caeser_cypher::SymbolCypherStats& stats) {
+    std::cout << "Символ: '" << ch << "'" << std::endl;
+    std::cout << "-Код символа ANSI: " << static_cast<int>(ch) << std::endl;
+    std::cout << "-Вхождение в исходный текст: " << stats.total << std::endl;
+    std::cout << "-Различных вариантов шифрования: " << stats.different_encodes.len() << std::endl << std::endl;
+}
+
 void PrintStatistics(const caeser_cypher::TotalCypherStats& stats) {
     int ch = DEFAULT_CHAR_PRINT;
 
@@ -20,14 +31,46 @@ void PrintStatistics(const caeser_cypher::TotalCypherStats& stats) {
         std::cout << "Длина исходного текста: " << stats.input_text_len << std::endl;
         std::cout << "Количество слов в блокноте шифрования: " << stats.cypher_notebook_len << std::endl << std::endl;
 
-        for (char i = -DEFAULT_CHAR_PRINT_NEIGHBOURS; i < DEFAULT_CHAR_PRINT_NEIGHBOURS + 1; ++i) {
-            if (ch + i < ANSI_MIN_CHAR || ch + i > ANSI_MAX_CHAR) {
-                continue;
+        auto chars_to_print = vec::Vec<char>();
+
+        char printed_neighbours = 0;
+        int shift = -1;
+        while (printed_neighbours < DEFAULT_CHAR_PRINT_NEIGHBOURS) {
+            int new_ch = ch + shift;
+            if (!IsValidAnsi(new_ch)) {
+                break;
             }
-            std::cout << "Символ: '" << static_cast<char>(ch + i) << "'" << std::endl;
-            std::cout << "-Код символа ANSI: " << ch + i << std::endl;
-            std::cout << "-Вхождение в исходный текст: " << stats.symbols[ch + i].total << std::endl;
-            std::cout << "-Различных вариантов шифрования: " << stats.symbols[ch + i].different_encodes.len() << std::endl;
+
+            if (stats.symbols[new_ch].total) {
+                ++printed_neighbours;
+                chars_to_print.push(static_cast<char>(new_ch));
+            }
+
+            --shift;
+        }
+
+        chars_to_print.reverse();
+        chars_to_print.push(static_cast<char>(ch));
+
+        printed_neighbours = 0;
+        shift = 1;
+        while (printed_neighbours < DEFAULT_CHAR_PRINT_NEIGHBOURS) {
+            int new_ch = ch + shift;
+            if (!IsValidAnsi(new_ch)) {
+                break;
+            }
+
+            if (stats.symbols[new_ch].total) {
+                ++printed_neighbours;
+                chars_to_print.push(static_cast<char>(new_ch));
+            }
+
+            ++shift;
+        }
+
+        for (size_t i = 0; i < chars_to_print.len(); ++i) {
+            char ch = chars_to_print.get(i);
+            PrintChar(ch, stats.symbols[static_cast<size_t>(ch)]);
         }
 
         std::cout << "\nВведите код символа ANSI для просмотра статистики или -1 для выхода: ";

@@ -47,6 +47,14 @@ struct Vec {
         }
     }
 
+    void reverse() {
+        for (size_t i = 0; i < this->len() / 2; ++i) {
+            T tmp = this->data[i];
+            this->data[i] = this->data[this->len() - i - 1];
+            this->data[this->len() - i - 1] = tmp;
+        }
+    }
+
     bool contains(T value) const {
         for (size_t i = 0; i < this->len(); ++i) {
             if (this->get(i) == value) {
