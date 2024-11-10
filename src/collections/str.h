@@ -47,9 +47,15 @@ struct String {
 };
 
 String Joined(const vec::Vec<String>& str_vec);
-vec::Vec<String> GroupedBy(const String& s, size_t group_size);
 
-// String RemovePunctuation(String str_vec);
+String Slice(const String& s, size_t start);
+String Slice(const String& s, size_t start, size_t end);
+
+vec::Vec<String> GroupedBy(const String& s, size_t group_size);
 vec::Vec<String> Split(String s);
+vec::Vec<String> Split(String s, String delimeter);
+
+bool Equals(String s1, String s2);
+bool StartsWith(String s, String prefix);
 
 }  // namespace str

@@ -17,6 +17,21 @@ size_t String::len() const {
     return this->size;
 }
 
+String Slice(const String& s, size_t start) {
+    return Slice(s, start, s.len());
+}
+
+String Slice(const String& s, size_t start, size_t end) {
+    auto slice = new char[end - start + 1];
+    std::strncpy(slice, s.get() + start, end - start);
+    slice[end - start] = '\0';
+
+    auto str = String(slice);
+    delete[] slice;
+
+    return str;
+}
+
 vec::Vec<String> Split(String s) {
     auto buf = vec::Vec<String>();
 
@@ -39,6 +54,28 @@ vec::Vec<String> Split(String s) {
     }
 
     return buf;
+}
+
+vec::Vec<String> Split(String s, String delimeter) {
+    auto output = vec::Vec<String>();
+
+    auto buf = vec::Vec<char>();
+    for (size_t i = 0; i < s.len() - delimeter.len() + 1; ++i) {
+        if (!std::strncmp(s.inner() + i, delimeter.inner(), delimeter.len())) {
+            if (buf.len() != 0) {
+                output.push(String(buf));
+                buf.clear();
+            }
+
+            i += delimeter.len() - 1;
+        } else {
+            buf.push(s.get_char(i));
+        }
+    }
+
+    output.push(String(buf));
+
+    return output;
 }
 
 vec::Vec<String> GroupedBy(const String& s, size_t group_size) {
@@ -88,6 +125,14 @@ String Joined(const vec::Vec<String>& str_vec) {
     delete[] data_buf;
 
     return s;
+}
+
+bool Equals(String s1, String s2) {
+    return !std::strcmp(s1.inner(), s2.inner());
+}
+
+bool StartsWith(String s, String prefix) {
+    return !std::strncmp(s.inner(), prefix.inner(), prefix.len());
 }
 
 }  // namespace str
