@@ -26,11 +26,29 @@ struct Vec {
         this->data[this->size] = value;
         this->size++;
     }
+    void clear() {
+        if (this->data != nullptr) {
+            delete[] this->data;
+        }
+
+        this->size = 0;
+        this->capacity = DEFAULT_CAPACITY;
+        this->data = new T[DEFAULT_CAPACITY];
+    }
+
+    void extend(Vec<T> rhs) {
+        for (size_t i = 0; i < rhs.len(); ++i) {
+            this->push(rhs.get(i));
+        }
+    }
+
+    void set(T item, size_t index) { this->data[index] = item; }
+
     T pop();
 
-    T get(size_t index) { return this->data[index]; }
+    T get(size_t index) const { return this->data[index]; }
 
-    size_t len() { return this->size; }
+    size_t len() const { return this->size; }
 
  private:
     T* data;
@@ -56,12 +74,10 @@ struct Vec {
 
         T* new_data = new T[capacity];
 
-        for (size_t i = 0; i < size; ++i) {
-            new_data[i] = data[i];
-        }
+        std::copy(data, data + size, new_data);
 
         delete[] data;
-        data = new_data;
+        this->data = new_data;
     }
 };
 }  // namespace vec

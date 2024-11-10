@@ -2,25 +2,25 @@ cmake_minimum_required(VERSION 3.20)
 
 project(Caesar)
 
-# set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cypher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/fs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/str.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/vec.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.cpp
 )
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cypher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/fs.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/str.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/vec.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.h
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})

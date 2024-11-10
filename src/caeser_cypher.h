@@ -1,5 +1,5 @@
-#include "internal/str.h"
-#include "internal/vec.h"
+#include "collections/str.h"
+#include "collections/vec.h"
 
 namespace caeser_cypher {
 struct CypherWords {
@@ -10,6 +10,6 @@ struct CypherWords {
     vec::Vec<char> cypher_codes;
 };
 
-void encode(str::String s, vec::Vec<char>& buf, CypherWords& cypher_words);
-void decode(str::String s, vec::Vec<char>& buf, CypherWords& cypher_words);
+str::String encode(str::String s, CypherWords& cypher_words);
+str::String decode(str::String s, CypherWords& cypher_words);
 }  // namespace caeser_cypher
