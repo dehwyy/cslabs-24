@@ -100,14 +100,17 @@ vec::Vec<str::String> Decode(const vec::Vec<str::String>& data, caeser_cypher::C
 
 void RunCaesarCypher(args_parser::ParsedFilenames filenames, caeser_cypher::TotalCypherStats& stats) {
     auto cypher_file_data = fs::ReadAllVec(filenames.cypher_file, CYPHER_LEN);
-    auto cypher_words = caeser_cypher::CypherWords(cypher_file_data);
+    auto cyphere_file_as_str = str::Joined(cypher_file_data);
+    auto cypher_file_words = str::Split(cyphere_file_as_str);
+
+    auto cypher_words = caeser_cypher::CypherWords(cypher_file_words);
 
     auto input_file_data = fs::ReadAllVec(filenames.input_file, WORD_LEN);
     auto input_data_as_str = str::Joined(input_file_data);
     auto input_data = str::GroupedBy(input_data_as_str, WORD_LEN);
 
     stats.input_text_len = input_data_as_str.len();
-    stats.cypher_notebook_len = cypher_file_data.len();
+    stats.cypher_notebook_len = cypher_file_words.len();
 
     auto encoded_data = Encode(input_data, cypher_words, stats);
     fs::WriteAllVec(filenames.encoded_output_file, encoded_data);
