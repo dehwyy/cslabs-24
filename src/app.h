@@ -7,6 +7,5 @@
 #include "lib/fs.h"
 
 namespace app {
-void Run(void (*execute)(args_parser::ParsedFilenames filenames), args_parser::ParsedFilenames filenames);
-void RunCaesarCypher(args_parser::ParsedFilenames filenames);
+void Run(args_parser::ParsedFilenames filenames);
 }  // namespace app

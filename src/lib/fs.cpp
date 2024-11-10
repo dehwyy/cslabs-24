@@ -8,7 +8,6 @@ void HandleOpenError(const str::String& filepath, bool is_open) {
         exit(1);
     }
 }
-
 }  // namespace
 
 namespace fs {

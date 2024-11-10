@@ -5,10 +5,6 @@ namespace str {
 char String::get_char(size_t i) const {
     return this->data[i];
 }
-char* String::get() const {
-    return this->data;
-}
-
 char* String::inner() const {
     return this->data;
 }
@@ -23,7 +19,7 @@ String Slice(const String& s, size_t start) {
 
 String Slice(const String& s, size_t start, size_t end) {
     auto slice = new char[end - start + 1];
-    std::strncpy(slice, s.get() + start, end - start);
+    std::strncpy(slice, s.inner() + start, end - start);
     slice[end - start] = '\0';
 
     auto str = String(slice);
@@ -83,17 +79,12 @@ vec::Vec<String> GroupedBy(const String& s, size_t group_size) {
     char* group = new char[group_size + 1];
 
     for (size_t i = 0; i < s.len(); i += group_size) {
-        // if (i >= this->size) {
-        //     i = this->size - 1;
-        // }
-
-        std::strncpy(group, s.get() + i, group_size);
+        std::strncpy(group, s.inner() + i, group_size);
         group[group_size] = '\0';
         buf.push(group);
     }
 
     delete[] group;
-
     return buf;
 }
 
@@ -110,13 +101,6 @@ String Joined(const vec::Vec<String>& str_vec) {
         auto s = str_vec.get(i);
         std::strncpy(data_buf + write_len, s.inner(), s.len());
         write_len += s.len();
-
-        // std::cout << "\nDEBUG START" << std::endl;
-        // std::cout << "DAta temp: " << data_buf << std::endl;
-        // std::cout << "DAta: " << s.inner() << std::endl;
-        // std::cout << "DAta len: " << s.len() << std::endl;
-        // std::cout << "DAta temp len: " << strlen(data_buf) << std::endl;
-        // std::cout << "DEBUG END" << std::endl;
     }
 
     data_buf[write_len] = '\0';

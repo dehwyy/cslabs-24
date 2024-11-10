@@ -1,12 +1,44 @@
 #include "app.h"
 
 namespace {
-const int WORD_LEN = 5;
+const char DEFAULT_CHAR_PRINT = 'z';
+const char DEFAULT_CHAR_PRINT_NEIGHBOURS = 2;
 
-vec::Vec<str::String> Encode(const vec::Vec<str::String>& data, caeser_cypher::CypherWords& cypher_words) {
+const char* const ANSI_CLEAR_SCREEN = "\x1B[2J\x1B[H";
+
+const char ANSI_MIN_CHAR = 0;
+const char ANSI_MAX_CHAR = 127;
+
+const int WORD_LEN = 300;
+const int CYPHER_LEN = 100;
+
+void PrintStatistics(const caeser_cypher::TotalCypherStats& stats) {
+    int ch = DEFAULT_CHAR_PRINT;
+
+    while (ch >= ANSI_MIN_CHAR && ch <= ANSI_MAX_CHAR) {
+        std::cout << ANSI_CLEAR_SCREEN;
+        std::cout << "Длина исходного текста: " << stats.input_text_len << std::endl;
+        std::cout << "Количество слов в блокноте шифрования: " << stats.cypher_notebook_len << std::endl << std::endl;
+
+        for (char i = -DEFAULT_CHAR_PRINT_NEIGHBOURS; i < DEFAULT_CHAR_PRINT_NEIGHBOURS + 1; ++i) {
+            if (ch + i < ANSI_MIN_CHAR || ch + i > ANSI_MAX_CHAR) {
+                continue;
+            }
+            std::cout << "Символ: '" << static_cast<char>(ch + i) << "'" << std::endl;
+            std::cout << "-Код символа ANSI: " << ch + i << std::endl;
+            std::cout << "-Вхождение в исходный текст: " << stats.symbols[ch + i].total << std::endl;
+            std::cout << "-Различных вариантов шифрования: " << stats.symbols[ch + i].different_encodes.len() << std::endl;
+        }
+
+        std::cout << "\nВведите код символа ANSI для просмотра статистики или -1 для выхода: ";
+        std::cin >> ch;
+    }
+}
+
+vec::Vec<str::String> Encode(const vec::Vec<str::String>& data, caeser_cypher::CypherWords& cypher_words, caeser_cypher::TotalCypherStats& stats) {
     auto encoded_data = vec::Vec<str::String>();
     for (size_t i = 0; i < data.len(); ++i) {
-        auto encoded_s = caeser_cypher::encode(data.get(i), cypher_words);
+        auto encoded_s = caeser_cypher::encode(data.get(i), cypher_words, stats);
         encoded_data.push(encoded_s);
     }
 
@@ -23,32 +55,38 @@ vec::Vec<str::String> Decode(const vec::Vec<str::String>& data, caeser_cypher::C
     return decoded_data;
 }
 
-}  // namespace
-
-namespace app {
-void Run(void (*execute)(args_parser::ParsedFilenames filenames), args_parser::ParsedFilenames filenames) {
-    char input = 'y';
-
-    while (input == 'y') {
-        execute(filenames);
-
-        std::cout << "Продолжить выполнение? (y/n): ";
-        std::cin >> input;
-    }
-}
-
-void RunCaesarCypher(args_parser::ParsedFilenames filenames) {
-    auto cypher_file_data = fs::ReadAllVec(filenames.cypher_file, WORD_LEN);
+void RunCaesarCypher(args_parser::ParsedFilenames filenames, caeser_cypher::TotalCypherStats& stats) {
+    auto cypher_file_data = fs::ReadAllVec(filenames.cypher_file, CYPHER_LEN);
     auto cypher_words = caeser_cypher::CypherWords(cypher_file_data);
 
     auto input_file_data = fs::ReadAllVec(filenames.input_file, WORD_LEN);
     auto input_data_as_str = str::Joined(input_file_data);
     auto input_data = str::GroupedBy(input_data_as_str, WORD_LEN);
 
-    auto encoded_data = Encode(input_data, cypher_words);
+    stats.input_text_len = input_data_as_str.len();
+    stats.cypher_notebook_len = cypher_file_data.len();
+
+    auto encoded_data = Encode(input_data, cypher_words, stats);
     fs::WriteAllVec(filenames.encoded_output_file, encoded_data);
 
     auto decoded_data = Decode(encoded_data, cypher_words);
     fs::WriteAllVec(filenames.decoded_output_file, decoded_data);
+}
+
+}  // namespace
+
+namespace app {
+void Run(args_parser::ParsedFilenames filenames) {
+    if (!filenames.is_filled()) {
+        std::cerr << "Failed to parse args!" << std::endl;
+        args_parser::PrintHelp();
+
+        return;
+    }
+
+    caeser_cypher::TotalCypherStats statistics = {};
+
+    RunCaesarCypher(filenames, statistics);
+    PrintStatistics(statistics);
 }
 }  // namespace app

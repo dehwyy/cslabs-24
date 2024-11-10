@@ -45,4 +45,14 @@ ParsedFilenames parse(int argc, char** argv) {
 
     return args;
 }
+
+void PrintHelp() {
+    std::cout << "\nUsage: ./[bin] [FILES]\n" << std::endl;
+    std::cout << "Files:" << std::endl;
+    std::cout << " --file=<path> - path to input file" << std::endl;
+    std::cout << " --cypher=<path> - path to cypher file" << std::endl;
+    std::cout << " --encoded=<path> - path to encoded output file" << std::endl;
+    std::cout << " --decoded=<path> - path to decoded output file" << std::endl;
+}
+
 }  // namespace args_parser

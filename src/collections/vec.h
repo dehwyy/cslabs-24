@@ -1,5 +1,4 @@
 #pragma once
-#include <cstddef>
 #include <iostream>
 
 namespace {
@@ -48,9 +47,15 @@ struct Vec {
         }
     }
 
-    void set(T item, size_t index) { this->data[index] = item; }
+    bool contains(T value) const {
+        for (size_t i = 0; i < this->len(); ++i) {
+            if (this->get(i) == value) {
+                return true;
+            }
+        }
 
-    T pop();
+        return false;
+    }
 
     T get(size_t index) const { return this->data[index]; }
 
@@ -60,20 +65,6 @@ struct Vec {
     T* data;
     size_t size;
     size_t capacity;
-
-    friend std::ostream& operator<<(std::ostream& os, const Vec<T>& vector) {
-        std::cout << '[';
-        for (size_t i = 0; i < vector.size; ++i) {
-            os << vector.data[i];
-
-            if (i != vector.size - 1) {
-                os << "|";
-            }
-        }
-        os << ']';
-
-        return os;
-    }
 
     void resize() {
         capacity *= GROWTH_FACTOR;

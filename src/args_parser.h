@@ -12,4 +12,5 @@ struct ParsedFilenames {
 };
 
 ParsedFilenames parse(int argc, char** argv);
+void PrintHelp();
 }  // namespace args_parser

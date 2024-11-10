@@ -3,7 +3,20 @@
 
 namespace {
 const int MOD = 128;
+void NewSymbolOrIncrement(caeser_cypher::TotalCypherStats& stats, char ch, char encoded_ch) {
+    size_t ch_idx = ch - 1;
+
+    ++stats.symbols[ch_idx].total;
+    if (!stats.symbols[ch_idx].s) {
+        stats.symbols[ch_idx].s = ch;
+        stats.symbols[ch_idx].different_encodes.push(encoded_ch);
+    } else {
+        if (!stats.symbols[ch_idx].different_encodes.contains(encoded_ch)) {
+            stats.symbols[ch_idx].different_encodes.push(encoded_ch);
+        }
+    }
 }
+}  // namespace
 
 namespace caeser_cypher {
 CypherWords::CypherWords(const vec::Vec<str::String>& codewords) : cypher_codes(vec::Vec<char>()) {
@@ -29,12 +42,15 @@ char CypherWords::get_wrapped(size_t idx) {
     return this->cypher_codes.get(idx);
 }
 
-str::String encode(str::String s, CypherWords& cypher_words) {
+str::String encode(str::String s, CypherWords& cypher_words, TotalCypherStats& stats) {
     auto buf = vec::Vec<char>();
     for (size_t i = 0; i < s.len(); i++) {
-        int encoded_value = (s.get_char(i) + cypher_words.get_wrapped(i)) % MOD + 1;
+        char ch = s.get_char(i);
 
+        int encoded_value = (ch + cypher_words.get_wrapped(i)) % MOD + 1;
         char encoded_ch = static_cast<char>(encoded_value);
+
+        NewSymbolOrIncrement(stats, ch, encoded_ch);
         buf.push(encoded_ch);
     }
 
