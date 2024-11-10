@@ -3,7 +3,7 @@
 
 namespace caeser_cypher {
 struct CypherWords {
-    CypherWords(vec::Vec<str::String>& codewords);
+    CypherWords(const vec::Vec<str::String>& codewords);
     char get_wrapped(size_t idx);
 
  private:

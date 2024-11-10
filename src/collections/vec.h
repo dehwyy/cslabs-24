@@ -18,6 +18,12 @@ struct Vec {
         }
     }
 
+    ~Vec() {
+        if (this->data) {
+            delete[] this->data;
+        }
+    }
+
     void push(T value) {
         if (this->size == this->capacity) {
             this->resize();

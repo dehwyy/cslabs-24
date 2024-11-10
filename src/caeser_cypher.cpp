@@ -6,9 +6,7 @@ const int MOD = 128;
 }
 
 namespace caeser_cypher {
-CypherWords::CypherWords(vec::Vec<str::String>& codewords) {
-    this->cypher_codes = vec::Vec<char>();
-
+CypherWords::CypherWords(const vec::Vec<str::String>& codewords) : cypher_codes(vec::Vec<char>()) {
     for (size_t i = 0; i < codewords.len(); i++) {
         int codeword_sum = 0;
         str::String codeword = codewords.get(i);

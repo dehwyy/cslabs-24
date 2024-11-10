@@ -17,13 +17,6 @@ size_t String::len() const {
     return this->size;
 }
 
-String RemovePunctuation(String s) {
-    auto words = Split(s);
-    auto s_joined = Joined(words);
-
-    return s_joined;
-}
-
 vec::Vec<String> Split(String s) {
     auto buf = vec::Vec<String>();
 

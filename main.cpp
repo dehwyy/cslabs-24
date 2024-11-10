@@ -25,6 +25,8 @@ int main(int argc, char** argv) {
 void t() {
     auto dataf = fs::ReadAllVec(str::String("ztext.txt"), WORD_LEN);
 
+    std::cout << "dataf: " << dataf << std::endl;
+
     auto data = vec::Vec<str::String>();
     for (size_t i = 0; i < dataf.len(); ++i) {
         data.extend(str::Split(dataf.get(i)));
@@ -44,7 +46,8 @@ void t() {
 
     auto processed_cypher_data = vec::Vec<str::String>();
     for (size_t i = 0; i < cypher_data.len(); ++i) {
-        processed_cypher_data.push(str::RemovePunctuation(cypher_data.get(i)));
+        auto v = str::Split(cypher_data.get(i));
+        processed_cypher_data.push(str::Joined(v));
     }
 
     std::cout << "processed_cypher_data: " << processed_cypher_data << std::endl;

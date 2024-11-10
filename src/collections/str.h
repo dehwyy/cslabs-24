@@ -12,7 +12,7 @@ struct String {
         this->data = new char[this->size + 1];
         std::strncpy(this->data, v, this->size + 1);
     }
-    String(vec::Vec<char>& v) {
+    String(const vec::Vec<char>& v) {
         // std::cout << "Vec! with len: " << v << " with " << v.len();
         this->size = v.len();
         this->data = new char[this->size + 1];
@@ -36,22 +36,6 @@ struct String {
         return os;
     }
 
-    void group_by(vec::Vec<str::String>& buf, size_t group_size) {
-        char* group = new char[group_size + 1];
-
-        for (size_t i = 0; i < this->size; i += group_size) {
-            // if (i >= this->size) {
-            //     i = this->size - 1;
-            // }
-
-            std::strncpy(group, this->data + i, group_size);
-            group[group_size] = '\0';
-            buf.push(group);
-        }
-
-        delete[] group;
-    }
-
     char* get() const;
     char* inner() const;
     char get_char(size_t i) const;
@@ -65,7 +49,7 @@ struct String {
 String Joined(const vec::Vec<String>& str_vec);
 vec::Vec<String> GroupedBy(const String& s, size_t group_size);
 
-String RemovePunctuation(String str_vec);
+// String RemovePunctuation(String str_vec);
 vec::Vec<String> Split(String s);
 
 }  // namespace str

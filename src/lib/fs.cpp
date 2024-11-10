@@ -25,7 +25,10 @@ vec::Vec<str::String> ReadAllVec(const str::String& filepath, unsigned read_by) 
             read_buf[f.gcount()] = '\0';
         }
 
-        buf.push(str::String(read_buf));
+        auto s = str::String(read_buf);
+        if (s.len() != 0) {
+            buf.push(s);
+        }
 
         f.clear();
     }
