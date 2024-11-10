@@ -20,10 +20,13 @@ vec::Vec<str::String> ReadAllVec(const str::String& filepath, unsigned read_by) 
 
     char* read_buf = new char[read_by + 1];
 
-    while (f.getline(read_buf, read_by + 1) || !f.eof()) {
-        if (f.gcount() != read_by) {
-            read_buf[f.gcount()] = '\0';
+    while (true) {
+        f.read(read_buf, read_by);
+        if (f.gcount() == 0) {
+            break;
         }
+
+        read_buf[f.gcount()] = '\0';
 
         auto s = str::String(read_buf);
         if (s.len() != 0) {

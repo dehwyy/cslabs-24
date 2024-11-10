@@ -35,7 +35,7 @@ char CypherWords::get_wrapped(size_t idx) {
 str::String encode(str::String s, CypherWords& cypher_words) {
     auto buf = vec::Vec<char>();
     for (size_t i = 0; i < s.len(); i++) {
-        int encoded_value = (s.get_char(i) + cypher_words.get_wrapped(i)) % MOD;
+        int encoded_value = (s.get_char(i) + cypher_words.get_wrapped(i)) % MOD + 1;
 
         // std::cout << "s: " << (int)s.get_char(i) << " " << s.get_char(i) << std::endl;
         // std::cout << "cypher: " << (int)cypher_words.get_wrapped(i) << " " << cypher_words.get_wrapped(i) << std::endl;
@@ -53,7 +53,7 @@ str::String encode(str::String s, CypherWords& cypher_words) {
 str::String decode(str::String s, CypherWords& cypher_words) {
     auto buf = vec::Vec<char>();
     for (size_t i = 0; i < s.len(); i++) {
-        int decoded_value = (s.get_char(i) - cypher_words.get_wrapped(i)) % MOD;
+        int decoded_value = (s.get_char(i) - 1 - cypher_words.get_wrapped(i)) % MOD;
 
         if (decoded_value < 0) {
             decoded_value += MOD;

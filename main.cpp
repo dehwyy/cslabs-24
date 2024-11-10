@@ -25,24 +25,24 @@ int main(int argc, char** argv) {
 void t() {
     auto dataf = fs::ReadAllVec(str::String("ztext.txt"), WORD_LEN);
 
-    std::cout << "dataf: " << dataf << std::endl;
+    // std::cout << "dataf: " << dataf << std::endl;
 
-    auto data = vec::Vec<str::String>();
-    for (size_t i = 0; i < dataf.len(); ++i) {
-        data.extend(str::Split(dataf.get(i)));
-    }
+    // auto data = vec::Vec<str::String>();
+    // for (size_t i = 0; i < dataf.len(); ++i) {
+    //     data.extend(str::Split(dataf.get(i)));
+    // }
 
-    std::cout << "Data: " << data << std::endl;
+    // std::cout << "Dataf: " << dataf << std::endl;
 
-    auto joined_data = str::Joined(data);
-    std::cout << "Joined data: " << joined_data << std::endl;
+    auto joined_data = str::Joined(dataf);
+    // std::cout << "Joined data: " << joined_data << std::endl;
 
     auto grouped_data = str::GroupedBy(joined_data, WORD_LEN);
 
-    std::cout << "Grouped by 5" << grouped_data << std::endl;
+    // std::cout << "Grouped by 5" << grouped_data << std::endl;
 
     auto cypher_data = fs::ReadAllVec(str::String("zcypher.txt"), WORD_LEN);
-    std::cout << "cypher_data: " << cypher_data << std::endl;
+    // std::cout << "cypher_data: " << cypher_data << std::endl;
 
     auto processed_cypher_data = vec::Vec<str::String>();
     for (size_t i = 0; i < cypher_data.len(); ++i) {
@@ -50,7 +50,7 @@ void t() {
         processed_cypher_data.push(str::Joined(v));
     }
 
-    std::cout << "processed_cypher_data: " << processed_cypher_data << std::endl;
+    // std::cout << "processed_cypher_data: " << processed_cypher_data << std::endl;
 
     auto cypher_words = caeser_cypher::CypherWords(processed_cypher_data);
 
@@ -60,13 +60,13 @@ void t() {
         encoded_data.push(encoded_s);
     }
 
-    std::cout << "Encoded: " << encoded_data << std::endl;
+    // std::cout << "Encoded: " << encoded_data << std::endl;
     fs::WriteAllVec(str::String("output.txt"), encoded_data);
 
     // auto encodedf_data = vec::Vec<str::String>();
     auto encodedf_data = fs::ReadAllVec(str::String("output.txt"), WORD_LEN);
 
-    std::cout << "encodedf_data: " << encodedf_data << std::endl;
+    // std::cout << "encodedf_data: " << encodedf_data << std::endl;
 
     auto decoded_data = vec::Vec<str::String>();
     for (size_t i = 0; i < encodedf_data.len(); ++i) {
@@ -75,6 +75,6 @@ void t() {
     }
     fs::WriteAllVec(str::String("output2.txt"), decoded_data);
 
-    std::cout << "Decodedd: " << decoded_data << std::endl;
+    // std::cout << "Decodedd: " << decoded_data << std::endl;
     std::cout << "\n__END__\n" << std::endl;
 }

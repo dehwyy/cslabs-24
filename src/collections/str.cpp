@@ -22,15 +22,16 @@ vec::Vec<String> Split(String s) {
 
     auto word = vec::Vec<char>();
     for (size_t i = 0; i < s.len(); ++i) {
+        word.push(s.get_char(i));
         if (std::ispunct(s.get_char(i)) || std::isspace(s.get_char(i))) {
-            if (word.len() != 0) {
+            if (word.len() > 1) {
                 buf.push(String(word));
                 word.clear();
             }
             continue;
         }
 
-        word.push(s.get_char(i));
+        // word.push(s.get_char(i));
     }
 
     if (word.len() != 0) {
