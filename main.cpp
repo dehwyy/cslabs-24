@@ -1,8 +1,6 @@
-#include <iostream>
 #include "src/app.h"
 
-int main(int argc, char** argv) {
-    auto args = args_parser::parse(argc, argv);
-    app::Run(args);
+int main(int, char**) {
+    app::Run();
     return 0;
 }

@@ -1,26 +1,22 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Caesar)
+project(MatrixPrint)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cypher.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/mprinter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/matrix.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/random.cpp
 )
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cypher.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/mprinter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/matrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/random.h
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})
