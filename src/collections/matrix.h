@@ -2,12 +2,12 @@
 
 namespace matrix {
 
-using MatrixFillCallback = int (*)(int, int);
+using MatrixFillCallback = double (*)(int, int);
 
 struct Matrix {
     int rows = 0;
     int cols = 0;
-    int** data = nullptr;
+    double** data = nullptr;
 };
 
 Matrix NewMatrix(int rows, int cols);

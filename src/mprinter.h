@@ -1,8 +1,7 @@
 #pragma once
-#include "collections/matrix.h"
 
 namespace mprinter {
 const int kMaxPrintWidth = 80;
 
-void PrintMatrix(const matrix::Matrix&, double epsilon);
+void PrintMatrix(double** matrix, int rows, int cols, int precision);
 }  // namespace mprinter
