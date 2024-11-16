@@ -5,6 +5,7 @@
 namespace {
 const int kMaxPrintWidth = 80;
 const int kColGap = 4;
+const int kDecimalBase = 10;
 
 void PrintTableLine(int w, char fill) {
     std::cout << std::setfill(fill) << std::setw(w) << " " << std::setfill(' ') << std::endl;
@@ -17,8 +18,8 @@ void PrintMatrix(double** matrix, int rows, int cols, int precision) {
     std::cout << "Precision: " << precision << std::endl;
 
     int max_el_len = 0;
-    int el;
-    int el_len;
+    int el = 0;
+    int el_len = 0;
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -28,8 +29,8 @@ void PrintMatrix(double** matrix, int rows, int cols, int precision) {
                 ++el_len;
             }
 
-            while (el > 10) {
-                el %= 10;
+            while (el > kDecimalBase) {
+                el %= kDecimalBase;
                 el_len++;
             }
 

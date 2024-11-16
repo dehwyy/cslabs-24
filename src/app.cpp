@@ -12,7 +12,6 @@ const int kMinMatrixSize = 8;
 const int kMaxMatrixSize = 15;
 const int kMinPrecision = 3;
 const int kMaxPrecision = 8;
-const int kDecimalBase = 10;
 const int x = 1;
 
 const int kStaticMatrixSize = 10;
