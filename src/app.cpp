@@ -36,6 +36,11 @@ void RunDynamicMatrix() {
     matrix::Matrix matrixA = matrix::NewMatrix(rows, cols);
 
     matrix::FillMatrix(matrixA, [](int i, int j) -> double {
+        // Main diagonal
+        if (i == j) {
+            return 1;
+        }
+
         // Above main diagonal
         if (j > i) {
             return std::pow(x, i) / std::pow(math::Factorial(j), i);
@@ -59,6 +64,12 @@ void RunStaticMatrix() {
     }
 
     mprinter::PrintMatrix(rows_p, kStaticMatrixSize, kStaticMatrixSize, precision);
+
+    std::cout << rows_p << "  " << rows_p[0] << "  " << rows_p[2] << std::endl;
+    std::cout << rows_p[0][0] << "  " << **rows_p << "  " << *rows_p[0] << std::endl;
+    std::cout << *(*(rows_p + 1)) << "  " << *rows_p[1] << std::endl;
+    std::cout << *(rows_p[0] + 1) << "  " << *(*rows_p + 1) << std::endl;
+    std::cout << rows_p[0][20] << "  " << *(rows_p[0] + 20) << "  " << *rows_p[2] << std::endl;
 }
 
 }  // namespace
@@ -68,6 +79,7 @@ namespace app {
 void Run() {
     int task = 0;
     std::cout << "Введите номер задания:\n" << "0 - Динамические матрица А\n" << "1 - Статические матрица В\n";
+    std::cout << "Ввод: ";
     std::cin >> task;
 
     switch (static_cast<Task>(task)) {
