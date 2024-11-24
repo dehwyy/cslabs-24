@@ -7,10 +7,9 @@ struct ParsedFilenames {
     str::String cypher_file;
     str::String encoded_output_file;
     str::String decoded_output_file;
-
-    bool is_filled();
 };
 
 ParsedFilenames parse(int argc, char** argv);
+bool IsFilledStruct(ParsedFilenames filenames);
 void PrintHelp();
 }  // namespace args_parser

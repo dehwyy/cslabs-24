@@ -11,7 +11,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.cpp
 )
 
 set(HEADERS

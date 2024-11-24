@@ -103,13 +103,13 @@ void RunCaesarCypher(args_parser::ParsedFilenames filenames, caeser_cypher::Tota
     auto cyphere_file_as_str = str::Joined(cypher_file_data);
     auto cypher_file_words = str::Split(cyphere_file_as_str);
 
-    auto cypher_words = caeser_cypher::CypherWords(cypher_file_words);
+    auto cypher_words = caeser_cypher::NewCypherWords(cypher_file_words);
 
     auto input_file_data = fs::ReadAllVec(filenames.input_file, WORD_LEN);
     auto input_data_as_str = str::Joined(input_file_data);
     auto input_data = str::GroupedBy(input_data_as_str, WORD_LEN);
 
-    stats.input_text_len = input_data_as_str.len();
+    stats.input_text_len = str::Len(input_data_as_str);
     stats.cypher_notebook_len = cypher_file_words.len();
 
     auto encoded_data = Encode(input_data, cypher_words, stats);
@@ -123,7 +123,7 @@ void RunCaesarCypher(args_parser::ParsedFilenames filenames, caeser_cypher::Tota
 
 namespace app {
 void Run(args_parser::ParsedFilenames filenames) {
-    if (!filenames.is_filled()) {
+    if (!args_parser::IsFilledStruct(filenames)) {
         std::cerr << "Failed to parse args!" << std::endl;
         args_parser::PrintHelp();
 

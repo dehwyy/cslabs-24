@@ -3,10 +3,8 @@
 
 namespace caeser_cypher {
 struct CypherWords {
-    CypherWords(const vec::Vec<str::String>& codewords);
-    char get_wrapped(size_t idx);
-
- private:
+    // CypherWords(const vec::Vec<str::String>& codewords);
+    // char get_wrapped(size_t idx);
     vec::Vec<char> cypher_codes;
 };
 
@@ -21,6 +19,9 @@ struct TotalCypherStats {
     size_t cypher_notebook_len = 0;
     size_t input_text_len = 0;
 };
+
+CypherWords NewCypherWords(const vec::Vec<str::String>& codewords);
+char GetWrappedCypherWordCode(const CypherWords& cypher_words, size_t idx);
 
 str::String encode(str::String s, CypherWords& cypher_words, TotalCypherStats& stats);
 str::String decode(str::String s, CypherWords& cypher_words);

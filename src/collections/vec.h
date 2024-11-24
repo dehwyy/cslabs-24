@@ -66,7 +66,6 @@ struct Vec {
     }
 
     T get(size_t index) const { return this->data[index]; }
-
     size_t len() const { return this->size; }
 
  private:

@@ -4,7 +4,7 @@
 namespace {
 void HandleOpenError(const str::String& filepath, bool is_open) {
     if (!is_open) {
-        std::cerr << "Failed to open file: " << filepath.inner() << std::endl;
+        std::cerr << "Failed to open file: " << str::AsCStr(filepath) << std::endl;
         exit(1);
     }
 }
@@ -13,7 +13,7 @@ void HandleOpenError(const str::String& filepath, bool is_open) {
 namespace fs {
 vec::Vec<str::String> ReadAllVec(const str::String& filepath, unsigned read_by) {
     auto buf = vec::Vec<str::String>();
-    std::ifstream f(filepath.inner(), std::ios::binary);
+    std::ifstream f(str::AsCStr(filepath), std::ios::binary);
 
     HandleOpenError(filepath, f.is_open());
 
@@ -27,8 +27,8 @@ vec::Vec<str::String> ReadAllVec(const str::String& filepath, unsigned read_by) 
 
         read_buf[f.gcount()] = '\0';
 
-        auto s = str::String(read_buf);
-        if (s.len() != 0) {
+        auto s = str::FromCStr(read_buf);
+        if (str::Len(s) != 0) {
             buf.push(s);
         }
 
@@ -43,14 +43,14 @@ vec::Vec<str::String> ReadAllVec(const str::String& filepath, unsigned read_by) 
 }
 
 void WriteAllVec(const str::String& filepath, vec::Vec<str::String>& buf) {
-    std::ofstream f(filepath.inner(), std::ios::binary | std::ios::trunc | std::ios::out);
+    std::ofstream f(str::AsCStr(filepath), std::ios::binary | std::ios::trunc | std::ios::out);
 
     HandleOpenError(filepath, f.is_open());
 
     for (size_t i = 0; i < buf.len(); i++) {
         auto s = buf.get(i);
 
-        f.write(s.inner(), static_cast<std::streamsize>(s.len()));
+        f.write(str::AsCStr(s), static_cast<std::streamsize>(str::Len(s)));
     }
 
     f.close();
