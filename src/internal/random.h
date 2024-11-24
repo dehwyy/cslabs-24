@@ -2,5 +2,5 @@
 #include <cstddef>
 
 namespace randmodule {
-[[nodiscard]] int FromRange(int begin, int end);
+[[nodiscard]] double FromRange(double begin, double end);
 }  // namespace randmodule
