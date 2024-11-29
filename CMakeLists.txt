@@ -8,13 +8,13 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/dictionary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/matrix.cpp
 )
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/dictionary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/matrix.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})
