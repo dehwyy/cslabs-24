@@ -18,7 +18,7 @@ struct Dictionary {
 Dictionary NewDict();
 
 void AddWord(Dictionary& dict, char* eng_word, char* rus_word);
-size_t RemoveWord(Dictionary& dict, char* eng_word);
+void RemoveWord(Dictionary& dict, char* eng_word);
 
 char* GetRusWord(const Dictionary& dict, char* eng_word);
 char* GetEngWord(const Dictionary& dict, char* rus_word);
