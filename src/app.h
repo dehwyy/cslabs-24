@@ -1,10 +1,5 @@
 #pragma once
 
 namespace app {
-enum class Mode {
-    Interactive,
-    Demonstration
-};
-
-void Run(Mode mode);
+void Run();
 }  // namespace app

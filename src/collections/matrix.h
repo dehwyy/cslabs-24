@@ -14,4 +14,5 @@ Matrix NewMatrix(int rows, int cols);
 void FillMatrix(Matrix&, MatrixFillCallback callback);
 void FreeMatrix(Matrix&);
 Matrix GaussJordan(const Matrix&);
+Matrix Multiply(const Matrix&, const Matrix&);
 }  // namespace matrix

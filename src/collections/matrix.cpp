@@ -1,4 +1,7 @@
 #include "matrix.h"
+#include <cmath>
+#include <iostream>
+#include "../mprinter.h"
 
 namespace {}
 
@@ -47,42 +50,42 @@ Matrix GaussJordan(const Matrix& matrix) {
         }
     }
 
-    // Прямой ход (Зануление нижнего левого угла)
-    for (int k = 0; k < n; k++)  // k-номер строки
-    {
-        for (int i = 0; i < 2 * n; i++) {
-            // i-номер столбца
-            // Деление k-строки на первый член !=0 для преобразования его в единицу
-            augmentMatrix.data[k][i] = augmentMatrix.data[k][i] / augmentMatrix.data[k][k];
+    for (int i = 0; i < n; i++) {
+        if (augmentMatrix.data[i][i] == 0) {
+            bool once = false;
+            // Перестановка строк
+            for (int j = i + 1; j < n; j++) {
+                if (augmentMatrix.data[j][i] != 0) {
+                    std::swap(augmentMatrix.data[i], augmentMatrix.data[j]);
+                    once = true;
+                    break;
+                }
+            }
 
-            for (int i = k + 1; i < n; i++)  // i-номер следующей строки после k
-            {
-                double koef = augmentMatrix.data[i][k] / augmentMatrix.data[k][k];  // Коэффициент
-                for (int j = 0; j < 2 * n; j++) {
-                    // j-номер столбца следующей строки после k
-                    // Зануление элементов матрицы ниже первого члена, преобразованного в единицу
-                    augmentMatrix.data[i][j] = augmentMatrix.data[i][j] - koef * augmentMatrix.data[k][j];
+            if (!once) {
+                std::cout << "Обратная матрица не существует" << std::endl;
+                FreeMatrix(augmentMatrix);
+                FreeMatrix(i_matrix);
+                return {};
+            }
+        }
+
+        for (int j = 0; j < n; j++) {
+            if (i != j) {
+                auto ratio = augmentMatrix.data[j][i] / augmentMatrix.data[i][i];
+                for (int k = 1; k <= 2 * n; k++) {
+                    augmentMatrix.data[j][k] = augmentMatrix.data[j][k] - ratio * augmentMatrix.data[i][k];
                 }
             }
         }
     }
 
-    // Обратный ход (Зануление верхнего правого угла)
-    for (int k = n - 1; k > -1; k--)  // k-номер строки
-    {
-        for (int i = 2 * n - 1; i > -1; i--) {
-            augmentMatrix.data[k][i] = augmentMatrix.data[k][i] / augmentMatrix.data[k][k];
-            for (int i = k - 1; i > -1; i--)  // i-номер следующей строки после k
-            {
-                double koef = augmentMatrix.data[i][k] / augmentMatrix.data[k][k];  // Коэффициент
-                for (int j = 2 * n - 1; j > -1; j--) {
-                    augmentMatrix.data[i][j] = augmentMatrix.data[i][j] - koef * augmentMatrix.data[k][j];
-                }
-            }
-        }  // i-номер столбца
+    for (int i = 0; i < n; i++) {
+        for (int j = n; j <= 2 * n; j++) {
+            augmentMatrix.data[i][j] = augmentMatrix.data[i][j] / augmentMatrix.data[i][i];
+        }
     }
 
-    // Отделяем от общей матрицы
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             i_matrix.data[i][j] = augmentMatrix.data[i][j + n];
@@ -91,5 +94,24 @@ Matrix GaussJordan(const Matrix& matrix) {
 
     FreeMatrix(augmentMatrix);
     return i_matrix;
+}
+
+Matrix Multiply(const Matrix& a, const Matrix& b) {
+    if (a.cols != b.rows) {
+        std::cout << "Matrixes can't be multiplied" << std::endl;
+        return {};
+    }
+
+    Matrix result = NewMatrix(a.rows, b.cols);
+    for (int i = 0; i < a.rows; i++) {
+        for (int j = 0; j < b.cols; j++) {
+            double sum = 0;
+            for (int k = 0; k < a.cols; k++) {
+                sum += a.data[i][k] * b.data[k][j];
+            }
+            result.data[i][j] = sum;
+        }
+    }
+    return result;
 }
 }  // namespace matrix
