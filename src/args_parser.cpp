@@ -4,7 +4,7 @@
 namespace args_parser {
 
 Args Parse(int argc, char* argv[]) {
-    auto args = Args{.mode = app::Mode::Interactive};
+    auto args = Args{.mode = app::Mode::Demonstration};
 
     for (int i = 1; i < argc; i++) {
         if (std::strcmp(argv[i], "--demo") == 0) {

@@ -81,6 +81,7 @@ void InteractiveMode() {
         std::cout << "4. Найти английское слово по русскому" << std::endl;
         std::cout << "5. Вывести словарь" << std::endl;
         std::cout << "6. Сохранить словарь в файл" << std::endl;
+        std::cout << "7. Выход из программы" << std::endl;
         std::cout << "Введите номер команды: ";
 
         std::cin >> input;
