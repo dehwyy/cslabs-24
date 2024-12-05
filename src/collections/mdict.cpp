@@ -1,4 +1,4 @@
-#include "dictionary.h"
+#include "mdict.h"
 #include <algorithm>
 #include <cstring>
 #include <fstream>

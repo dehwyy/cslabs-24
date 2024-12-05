@@ -1,6 +1,6 @@
 #include "app.h"
 #include <iostream>
-#include "collections/dictionary.h"
+#include "collections/mdict.h"
 
 namespace {
 const size_t WORD_CAPACITY = 100;
