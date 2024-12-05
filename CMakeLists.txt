@@ -1,20 +1,18 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Integral)
+project(Rsa)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/derivation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/random.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/rsa.cpp
 )
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/derivation.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/random.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/rsa.h
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})
