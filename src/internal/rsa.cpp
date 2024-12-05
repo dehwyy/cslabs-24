@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace {
-long power(long base, long exp, long mod) {
+long Power(long base, long exp, long mod) {
     long result = 1;
     while (exp > 0) {
         if (exp % 2 == 1) {
@@ -57,11 +57,11 @@ int GetE(int phi) {
 
 namespace rsa {
 long Encode(long message, long e, long n) {
-    return power(message, e, n);
+    return Power(message, e, n);
 }
 
 long Decode(long message, long d, long n) {
-    return power(message, d, n);
+    return Power(message, d, n);
 }
 
 void RunExample() {
