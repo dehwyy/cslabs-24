@@ -47,7 +47,7 @@ void PrintMatrix(double** matrix, int rows, int cols, int precision) {
     int start_col_idx = 0;
 
     PrintTableLine(tableLineLen, '-');
-    while (start_col_idx < cols - 1) {
+    while (start_col_idx < cols) {
         for (int i = 0; i < rows; i++) {
             for (int j = start_col_idx; j < start_col_idx + cols_per_time; j++) {
                 if (j >= cols) {

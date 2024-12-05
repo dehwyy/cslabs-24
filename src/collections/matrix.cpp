@@ -3,17 +3,11 @@
 #include <iostream>
 #include "../mprinter.h"
 
-namespace {}
-
 namespace matrix {
 
 Matrix NewMatrix(int rows, int cols) {
-    Matrix matrix;
+    Matrix matrix = {.rows = rows, .cols = cols, .data = new double*[rows]};
 
-    matrix.rows = rows;
-    matrix.cols = cols;
-
-    matrix.data = new double*[rows];
     for (int i = 0; i < rows; i++) {
         matrix.data[i] = new double[cols];
     }
@@ -37,12 +31,14 @@ void FreeMatrix(Matrix& matrix) {
 }
 
 Matrix GaussJordan(const Matrix& matrix) {
-    int n = matrix.rows;  // Размерность начальной матрицы
+    int n = matrix.rows;
 
-    Matrix i_matrix = NewMatrix(n, n);  // Единичная матрица (искомая обратная матрица)
+    // Единичная матрица (искомая обратная матрица)
+    Matrix i_matrix = NewMatrix(n, n);
     FillMatrix(i_matrix, [](int i, int j) { return i == j ? 1. : 0.; });
 
-    Matrix augmentMatrix = NewMatrix(n, 2 * n);  // Матрица, получаемая скреплением Начальной матрицы и единичной
+    // Матрица, получаемая скреплением Начальной матрицы и единичной
+    Matrix augmentMatrix = NewMatrix(n, 2 * n);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             augmentMatrix.data[i][j] = matrix.data[i][j];
@@ -66,6 +62,7 @@ Matrix GaussJordan(const Matrix& matrix) {
                 std::cout << "Обратная матрица не существует" << std::endl;
                 FreeMatrix(augmentMatrix);
                 FreeMatrix(i_matrix);
+                exit(1);
                 return {};
             }
         }
@@ -80,12 +77,14 @@ Matrix GaussJordan(const Matrix& matrix) {
         }
     }
 
+    // Деление на диагональные элементы
     for (int i = 0; i < n; i++) {
         for (int j = n; j <= 2 * n; j++) {
             augmentMatrix.data[i][j] = augmentMatrix.data[i][j] / augmentMatrix.data[i][i];
         }
     }
 
+    // Перенос данных в новую матрицу
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             i_matrix.data[i][j] = augmentMatrix.data[i][j + n];
