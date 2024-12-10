@@ -65,20 +65,42 @@ long Decode(long message, long d, long n) {
 }
 
 void RunExample() {
-    const int p = 19;
-    const int q = 41;
+    const int p = 11;
+    const int q = 13;
 
     const int n = GetN(p, q);
     const int phi = GetPhi(p, q);
     const int e = GetE(phi);
     const int d = GetD(e, phi);
 
-    const int message = 727;
+    const int message = 7;
 
     std::cout << "Открытый ключ: " << e << " " << n << std::endl;
     std::cout << "Приватный ключ: " << d << " " << n << std::endl;
 
     std::cout << "Число для шифрования: " << message << std::endl;
+
+    long encoded = Encode(message, e, n);
+    long decoded = Decode(encoded, d, n);
+
+    std::cout << "Зашифрованное сообщение: " << encoded << std::endl;
+    std::cout << "Расшифрованное сообщение: " << decoded << std::endl;
+}
+
+void RunInteractive() {
+    int p = 0;
+    int q = 0;
+    std::cout << "Введите два простых числа: ";
+    std::cin >> p >> q;
+
+    const int n = GetN(p, q);
+    const int phi = GetPhi(p, q);
+    const int e = GetE(phi);
+    const int d = GetD(e, phi);
+
+    long message = 0;
+    std::cout << "Введите число для шифрования: ";
+    std::cin >> message;
 
     long encoded = Encode(message, e, n);
     long decoded = Decode(encoded, d, n);
