@@ -13,10 +13,6 @@ void Run(int argc, char** argv) {
 
     vec::VecInt processedKeys = CaesarCipher::CreateNotebookKeys(keys);
 
-    for (size_t i = 0; i < processedKeys.size; i++) {
-        std::cout << processedKeys.vector[i] << " ";
-    }
-
     const char* encode = CaesarCipher::Encode(source, processedKeys);
     const char* decode = CaesarCipher::Decode(encode, processedKeys);
 

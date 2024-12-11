@@ -8,7 +8,7 @@ namespace {
 
 const int kMod = 128;
 
-const int kColWeight = 15;
+const int kColWeight = 20;
 
 [[nodiscard]] int GetASCII(char c) {
     return static_cast<int>(c);
@@ -34,7 +34,10 @@ char* ProccessText(const char* text, const vec::VecInt& keys, bool encode) {
         if (encode) {
             asciiValue = (asciiCode + key) % kMod + 1;
         } else {
-            asciiValue = (asciiCode - 1 - key + kMod) % kMod;
+            asciiValue = (asciiCode - 1 - key) % kMod;
+            if (asciiValue < 0) {
+                asciiValue += kMod;
+            }
         }
 
         result[i] = GetCharByASCII(asciiValue);
@@ -81,8 +84,12 @@ char* Decode(const char* text, const vec::VecInt& keys) {
 }
 
 void GenerateStatistics(const char* originalText, const char* encodedText, const vec::VecInt& keys) {
-    int asciiFrequency[kMod] = {0};
-    int uniqueEncodings[kMod] = {0};
+    int asciiFrequency[kMod] = {};
+    vec::VecInt uniqueEncodings[kMod] = {};
+    for (size_t i = 0; i < kMod; i++) {
+        uniqueEncodings[i] = vec::CreateVector();
+    }
+
     size_t originalTextLength = std::strlen(originalText);
     size_t encodedTextLength = std::strlen(encodedText);
 
@@ -91,23 +98,27 @@ void GenerateStatistics(const char* originalText, const char* encodedText, const
         asciiFrequency[symbol]++;
     }
 
-    char* decodeText = Decode(encodedText, keys);
-
     for (size_t i = 0; i <= encodedTextLength; i++) {
-        int encodeSymbol = GetASCII(encodedText[i]) % kMod;
-        int decodeSymbol = GetASCII(decodeText[i]) % kMod;
+        int ch = GetASCII(originalText[i]);
+        int encodedChar = GetASCII(encodedText[i]);
 
-        for (size_t j = 0; j <= encodedTextLength; j++) {
-            if (encodeSymbol == encodedText[j] && GetASCII(encodedText[j] != decodeSymbol)) {
-                uniqueEncodings[encodeSymbol]++;
+        bool included = false;
+        for (size_t j = 0; j < uniqueEncodings[ch].size; j++) {
+            if (uniqueEncodings[ch].vector[j] == encodedChar) {
+                included = true;
+                break;
             }
+        }
+
+        if (!included) {
+            vec::Push(uniqueEncodings[ch], encodedChar);
         }
     }
 
-    delete[] decodeText;
-
     std::cout << "Origin text length: " << originalTextLength << std::endl;
-
+    for (size_t i = 0; i < keys.size; i++) {
+        std::cout << "Key " << i + 1 << ": " << keys.vector[i] << std::endl;
+    }
     std::cout << "Notebook words: " << keys.size << std::endl;
 
     std::cout << std::setw(kColWeight) << "Symbol " << std::setw(kColWeight) << "ASCII Code " << std::setw(kColWeight) << "Frequency "
@@ -116,7 +127,7 @@ void GenerateStatistics(const char* originalText, const char* encodedText, const
     for (int i = 0; i < kMod; i++) {
         if (asciiFrequency[i] > 0 && i >= 32) {
             std::cout << std::setw(kColWeight) << GetCharByASCII(i) << std::setw(kColWeight) << i << std::setw(kColWeight) << asciiFrequency[i]
-                      << std::setw(kColWeight) << uniqueEncodings[i] + 1 << std::endl;
+                      << std::setw(kColWeight) << uniqueEncodings[i].size << std::endl;
         }
     }
 }
