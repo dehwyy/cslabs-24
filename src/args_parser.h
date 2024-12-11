@@ -4,7 +4,7 @@
 namespace args_parser {
 struct ParsedFilenames {
     str::String input_file;
-    str::String cypher_file;
+    str::String cipher_file;
     str::String encoded_output_file;
     str::String decoded_output_file;
 };

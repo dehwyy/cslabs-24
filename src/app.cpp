@@ -10,26 +10,26 @@ const char ANSI_MIN_CHAR = 0;
 const char ANSI_MAX_CHAR = 127;
 
 const int WORD_LEN = 300;
-const int CYPHER_LEN = 100;
+const int CIPHER_LEN = 100;
 
 bool IsValidAnsi(int ch) {
     return ch >= ANSI_MIN_CHAR && ch <= ANSI_MAX_CHAR;
 }
 
-void PrintChar(char ch, const caeser_cypher::SymbolCypherStats& stats) {
+void PrintChar(char ch, const caeser_cipher::SymbolCipherStats& stats) {
     std::cout << "Символ: '" << ch << "'" << std::endl;
     std::cout << "-Код символа ANSI: " << static_cast<int>(ch) << std::endl;
     std::cout << "-Вхождение в исходный текст: " << stats.total << std::endl;
     std::cout << "-Различных вариантов шифрования: " << stats.different_encodes.len() << std::endl << std::endl;
 }
 
-void PrintStatistics(const caeser_cypher::TotalCypherStats& stats) {
+void PrintStatistics(const caeser_cipher::TotalCipherStats& stats) {
     int ch = DEFAULT_CHAR_PRINT;
 
     while (ch >= ANSI_MIN_CHAR && ch <= ANSI_MAX_CHAR) {
         std::cout << ANSI_CLEAR_SCREEN;
         std::cout << "Длина исходного текста: " << stats.input_text_len << std::endl;
-        std::cout << "Количество слов в блокноте шифрования: " << stats.cypher_notebook_len << std::endl << std::endl;
+        std::cout << "Количество слов в блокноте шифрования: " << stats.cipher_notebook_len << std::endl << std::endl;
 
         auto chars_to_print = vec::Vec<char>();
 
@@ -78,44 +78,44 @@ void PrintStatistics(const caeser_cypher::TotalCypherStats& stats) {
     }
 }
 
-vec::Vec<str::String> Encode(const vec::Vec<str::String>& data, caeser_cypher::CypherWords& cypher_words, caeser_cypher::TotalCypherStats& stats) {
+vec::Vec<str::String> Encode(const vec::Vec<str::String>& data, caeser_cipher::CipherWords& cipher_words, caeser_cipher::TotalCipherStats& stats) {
     auto encoded_data = vec::Vec<str::String>();
     for (size_t i = 0; i < data.len(); ++i) {
-        auto encoded_s = caeser_cypher::encode(data.get(i), cypher_words, stats);
+        auto encoded_s = caeser_cipher::encode(data.get(i), cipher_words, stats);
         encoded_data.push(encoded_s);
     }
 
     return encoded_data;
 }
 
-vec::Vec<str::String> Decode(const vec::Vec<str::String>& data, caeser_cypher::CypherWords& cypher_words) {
+vec::Vec<str::String> Decode(const vec::Vec<str::String>& data, caeser_cipher::CipherWords& cipher_words) {
     auto decoded_data = vec::Vec<str::String>();
     for (size_t i = 0; i < data.len(); ++i) {
-        auto decoded_s = caeser_cypher::decode(data.get(i), cypher_words);
+        auto decoded_s = caeser_cipher::decode(data.get(i), cipher_words);
         decoded_data.push(decoded_s);
     }
 
     return decoded_data;
 }
 
-void RunCaesarCypher(args_parser::ParsedFilenames filenames, caeser_cypher::TotalCypherStats& stats) {
-    auto cypher_file_data = fs::ReadAllVec(filenames.cypher_file, CYPHER_LEN);
-    auto cyphere_file_as_str = str::Joined(cypher_file_data);
-    auto cypher_file_words = str::Split(cyphere_file_as_str);
-
-    auto cypher_words = caeser_cypher::NewCypherWords(cypher_file_words);
+void RunCaesarCipher(args_parser::ParsedFilenames filenames, caeser_cipher::TotalCipherStats& stats) {
+    auto cipher_file_data = fs::ReadAllVec(filenames.cipher_file, CIPHER_LEN);
+    auto ciphere_file_as_str = str::Joined(cipher_file_data);
+    auto cipher_file_words = str::Split(ciphere_file_as_str);
+    auto cipher_words = caeser_cipher::NewCipherWords(cipher_file_words);
 
     auto input_file_data = fs::ReadAllVec(filenames.input_file, WORD_LEN);
+
     auto input_data_as_str = str::Joined(input_file_data);
     auto input_data = str::GroupedBy(input_data_as_str, WORD_LEN);
 
     stats.input_text_len = str::Len(input_data_as_str);
-    stats.cypher_notebook_len = cypher_file_words.len();
+    stats.cipher_notebook_len = cipher_file_words.len();
 
-    auto encoded_data = Encode(input_data, cypher_words, stats);
+    auto encoded_data = Encode(input_data, cipher_words, stats);
     fs::WriteAllVec(filenames.encoded_output_file, encoded_data);
 
-    auto decoded_data = Decode(encoded_data, cypher_words);
+    auto decoded_data = Decode(encoded_data, cipher_words);
     fs::WriteAllVec(filenames.decoded_output_file, decoded_data);
 }
 
@@ -130,9 +130,9 @@ void Run(args_parser::ParsedFilenames filenames) {
         return;
     }
 
-    caeser_cypher::TotalCypherStats statistics = {};
+    caeser_cipher::TotalCipherStats statistics = {};
 
-    RunCaesarCypher(filenames, statistics);
+    RunCaesarCipher(filenames, statistics);
     PrintStatistics(statistics);
 }
 }  // namespace app
