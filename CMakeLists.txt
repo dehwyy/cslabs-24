@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Caesar)
+project(Caesar2)
 
 # set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
@@ -10,7 +10,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cipher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.cpp
 )
 
 set(HEADERS
@@ -18,7 +18,6 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/caeser_cipher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/args_parser.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/fs.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/str.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/collections/vec.h
 )
 

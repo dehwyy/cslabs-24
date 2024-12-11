@@ -1,85 +1,124 @@
 #include "caeser_cipher.h"
+#include <cctype>
+#include <cstring>
+#include <iomanip>
 #include <iostream>
 
 namespace {
-const int MOD = 128;
-void NewSymbolOrIncrement(caeser_cipher::TotalCipherStats& stats, char ch, char encoded_ch) {
-    int ch_idx = ch;
-    ++stats.symbols[ch_idx].total;
-    if (!stats.symbols[ch_idx].s) {
-        stats.symbols[ch_idx].s = ch;
-        stats.symbols[ch_idx].different_encodes.push(encoded_ch);
-    } else {
-        if (!stats.symbols[ch_idx].different_encodes.contains(encoded_ch)) {
-            stats.symbols[ch_idx].different_encodes.push(encoded_ch);
-        }
-    }
+
+const int kMod = 128;
+
+const int kColWeight = 15;
+
+[[nodiscard]] int GetASCII(char c) {
+    return static_cast<int>(c);
 }
+
+[[nodiscard]] char GetCharByASCII(int asciiCode) {
+    return static_cast<char>(asciiCode);
+}
+
+[[nodiscard]] bool IsSymbol(char ch) {
+    return !(std::ispunct(ch) || std::isspace(ch));
+}
+
+char* ProccessText(const char* text, const vec::VecInt& keys, bool encode) {
+    const size_t textLength = std::strlen(text);
+    char* result = new char[textLength + 1];
+
+    for (size_t i = 0; i <= textLength; i++) {
+        int key = vec::GetElement(keys, i % keys.size);
+        int asciiCode = GetASCII(text[i]);
+
+        int asciiValue = 0;
+        if (encode) {
+            asciiValue = (asciiCode + key) % kMod + 1;
+        } else {
+            asciiValue = (asciiCode - 1 - key + kMod) % kMod;
+        }
+
+        result[i] = GetCharByASCII(asciiValue);
+    }
+
+    result[textLength] = '\0';
+
+    return result;
+}
+
 }  // namespace
 
-namespace caeser_cipher {
+namespace CaesarCipher {
 
-CipherWords NewCipherWords(const vec::Vec<str::String>& codewords) {
-    auto cipher_codes = vec::Vec<char>();
-    for (size_t i = 0; i < codewords.len(); i++) {
-        int codeword_sum = 0;
-        str::String codeword = codewords.get(i);
+vec::VecInt CreateNotebookKeys(const char* notebook) {
+    vec::VecInt keys = vec::CreateVector();
 
-        for (size_t j = 0; j < str::Len(codeword); j++) {
-            codeword_sum += str::GetChar(codeword, j);
+    vec::VecInt word = vec::CreateVector();
+    for (size_t i = 0; i < std::strlen(notebook); i++) {
+        if (IsSymbol(notebook[i])) {
+            vec::Push(word, GetASCII(notebook[i]));
+        } else {
+            if (word.size > 0) {
+                int sum = 0;
+                for (size_t j = 0; j < word.size; j++) {
+                    sum += word.vector[j];
+                }
+
+                vec::Push(keys, sum % kMod);
+                vec::ClearVector(word);
+            }
         }
-
-        char ch = static_cast<char>(codeword_sum % MOD);
-
-        cipher_codes.push(ch);
     }
 
-    auto v = CipherWords{.cipher_codes = cipher_codes};
-
-    return v;
+    return keys;
 }
 
-char GetWrappedCipherWordCode(const CipherWords& cipher_words, size_t idx) {
-    size_t len = cipher_words.cipher_codes.len();
-    if (idx >= len && len != 0) {
-        idx = idx % len;
+char* Encode(const char* text, const vec::VecInt& keys) {
+    return ProccessText(text, keys, true);
+}
+
+char* Decode(const char* text, const vec::VecInt& keys) {
+    return ProccessText(text, keys, false);
+}
+
+void GenerateStatistics(const char* originalText, const char* encodedText, const vec::VecInt& keys) {
+    int asciiFrequency[kMod] = {0};
+    int uniqueEncodings[kMod] = {0};
+    size_t originalTextLength = std::strlen(originalText);
+    size_t encodedTextLength = std::strlen(encodedText);
+
+    for (size_t i = 0; i <= originalTextLength; i++) {
+        int symbol = GetASCII(originalText[i]) % kMod;
+        asciiFrequency[symbol]++;
     }
 
-    return cipher_words.cipher_codes.get(idx);
-}
+    char* decodeText = Decode(encodedText, keys);
 
-str::String encode(str::String s, CipherWords& cipher_words, TotalCipherStats& stats) {
-    std::cout << std::endl;
-    auto buf = vec::Vec<char>();
-    for (size_t i = 0; i < str::Len(s); i++) {
-        char ch = str::GetChar(s, i);
-        int encoded_value = (ch + GetWrappedCipherWordCode(cipher_words, i)) % MOD + 1;
-        char encoded_ch = static_cast<char>(encoded_value);
+    for (size_t i = 0; i <= encodedTextLength; i++) {
+        int encodeSymbol = GetASCII(encodedText[i]) % kMod;
+        int decodeSymbol = GetASCII(decodeText[i]) % kMod;
 
-        NewSymbolOrIncrement(stats, ch, encoded_ch);
-        buf.push(encoded_ch);
-    }
-
-    auto encoded_s = str::FromVec(buf);
-
-    return encoded_s;
-}
-
-str::String decode(str::String s, CipherWords& cipher_words) {
-    auto buf = vec::Vec<char>();
-    for (size_t i = 0; i < str::Len(s); i++) {
-        int decoded_value = (str::GetChar(s, i) - 1 - GetWrappedCipherWordCode(cipher_words, i)) % MOD;
-
-        if (decoded_value < 0) {
-            decoded_value += MOD;
+        for (size_t j = 0; j <= encodedTextLength; j++) {
+            if (encodeSymbol == encodedText[j] && GetASCII(encodedText[j] != decodeSymbol)) {
+                uniqueEncodings[encodeSymbol]++;
+            }
         }
-
-        char decoded_ch = static_cast<char>(decoded_value);
-        buf.push(decoded_ch);
     }
 
-    auto decoded_s = str::FromVec(buf);
+    delete[] decodeText;
 
-    return decoded_s;
+    std::cout << "Origin text length: " << originalTextLength << std::endl;
+
+    std::cout << "Notebook words: " << keys.size << std::endl;
+
+    std::cout << std::setw(kColWeight) << "Symbol " << std::setw(kColWeight) << "ASCII Code " << std::setw(kColWeight) << "Frequency "
+              << std::setw(kColWeight) << "Unique Encodings " << std::endl;
+
+    for (int i = 0; i < kMod; i++) {
+        if (asciiFrequency[i] > 0 && i >= 32) {
+            std::cout << std::setw(kColWeight) << GetCharByASCII(i) << std::setw(kColWeight) << i << std::setw(kColWeight) << asciiFrequency[i]
+                      << std::setw(kColWeight) << uniqueEncodings[i] + 1 << std::endl;
+        }
+    }
 }
-}  // namespace caeser_cipher
+
+}  // namespace CaesarCipher
