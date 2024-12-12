@@ -116,9 +116,6 @@ void GenerateStatistics(const char* originalText, const char* encodedText, const
     }
 
     std::cout << "Origin text length: " << originalTextLength << std::endl;
-    for (size_t i = 0; i < keys.size; i++) {
-        std::cout << "Key " << i + 1 << ": " << keys.vector[i] << std::endl;
-    }
     std::cout << "Notebook words: " << keys.size << std::endl;
 
     std::cout << std::setw(kColWeight) << "Symbol " << std::setw(kColWeight) << "ASCII Code " << std::setw(kColWeight) << "Frequency "
